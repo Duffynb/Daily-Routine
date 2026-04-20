@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#141a23" />
+      <stop offset="100%" stop-color="#0a0f16" />
+    </linearGradient>
+    <linearGradient id="cupBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="100%" stop-color="#dbe5f2" />
+    </linearGradient>
+    <linearGradient id="coffee" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#8c5a33" />
+      <stop offset="100%" stop-color="#5f3a1d" />
+    </linearGradient>
+    <linearGradient id="saucer" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e8edf5" />
+      <stop offset="100%" stop-color="#c3cedd" />
+    </linearGradient>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="1.4" stdDeviation="1.2" flood-color="#000000" flood-opacity="0.28" />
+    </filter>
+  </defs>
+
+  <rect x="1" y="1" width="62" height="62" rx="14" fill="url(#bg)" />
+
+  <!-- steam -->
+  <path d="M22 14c2 2 2 5 0 7" fill="none" stroke="#f5f8ff" stroke-opacity="0.82" stroke-width="1.8" stroke-linecap="round" />
+  <path d="M30 12c2 2 2 6 0 8" fill="none" stroke="#f5f8ff" stroke-opacity="0.82" stroke-width="1.9" stroke-linecap="round" />
+  <path d="M38 14c2 2 2 5 0 7" fill="none" stroke="#f5f8ff" stroke-opacity="0.82" stroke-width="1.8" stroke-linecap="round" />
+
+  <!-- saucer -->
+  <ellipse cx="32" cy="49" rx="22" ry="5.6" fill="url(#saucer)" filter="url(#softShadow)" />
+  <ellipse cx="32" cy="49" rx="16.5" ry="3.5" fill="#eef3fb" />
+
+  <!-- cup -->
+  <g filter="url(#softShadow)">
+    <path d="M14 27h30v14c0 3.9-3.1 7-7 7H21c-3.9 0-7-3.1-7-7z" fill="url(#cupBody)" />
+    <ellipse cx="29" cy="27" rx="15" ry="4.3" fill="#f8fbff" />
+    <ellipse cx="29" cy="27.2" rx="11.8" ry="3.2" fill="url(#coffee)" />
+    <ellipse cx="25.8" cy="26.5" rx="4.2" ry="1.1" fill="#b57d52" fill-opacity="0.35" />
+    <path d="M43.4 30.5h4.6a5.5 5.5 0 0 1 0 11h-4.6" fill="none" stroke="#d9e3f1" stroke-width="3.2" stroke-linecap="round" />
+    <path d="M16.5 32.2c0.4 4.9 1.7 10.2 9.6 12.2h9.8c4.9-1.1 6.8-3.9 7.6-7.6V41c0 4-3 7-7 7H21c-4 0-7-3-7-7z" fill="#cfd9e7" fill-opacity="0.35" />
+  </g>
+</svg>

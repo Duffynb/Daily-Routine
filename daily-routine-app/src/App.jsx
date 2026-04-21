@@ -41,7 +41,12 @@ export default class App extends Component {
       .then((data) => {
         this.applyServerData(data, {
           storageLoaded: true,
-          persistence: 'file',
+          persistence:
+            data?.persistence === 'supabase'
+              ? 'supabase'
+              : data?.persistence === 'file'
+                ? 'file'
+                : 'file',
         });
       })
       .catch(() => {
@@ -120,7 +125,7 @@ export default class App extends Component {
   persistNow = async (opts = {}) => {
     const { keepalive = false } = opts;
     const { storageLoaded, persistence, dataRevision } = this.state;
-    if (!storageLoaded || persistence !== 'file') return;
+    if (!storageLoaded || persistence === 'none') return;
     if (this.persistInFlight) {
       this.pendingPersist = true;
       return;
@@ -174,7 +179,7 @@ export default class App extends Component {
 
   schedulePersist = () => {
     const { storageLoaded, persistence } = this.state;
-    if (!storageLoaded || persistence !== 'file') return;
+    if (!storageLoaded || persistence === 'none') return;
     if (this.saveTimer) clearTimeout(this.saveTimer);
     this.saveTimer = setTimeout(() => {
       this.saveTimer = null;
@@ -314,8 +319,10 @@ export default class App extends Component {
           </div>
           <div className="app-header-right">
             <span className="app-header-tag">
-              {persistence === 'file'
-                ? 'Data v souboru local-app-data.json'
+              {persistence === 'supabase'
+                ? 'Data v Supabase'
+                : persistence === 'file'
+                  ? 'Data v souboru local-app-data.json'
                 : persistence === 'none'
                   ? 'Bez API — spusťte npm run dev nebo npm run preview pro ukládání do souboru'
                   : '...'}

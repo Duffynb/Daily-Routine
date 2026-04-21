@@ -431,7 +431,12 @@ export function appDataMiddleware(req, res, next) {
             Array.isArray(data?.foodEntries) ? data.foodEntries.length : 0
           } spend=${Array.isArray(data?.spendEntries) ? data.spendEntries.length : 0}`
         );
-        res.end(JSON.stringify(data));
+        res.end(
+          JSON.stringify({
+            ...data,
+            persistence: storeMode,
+          })
+        );
       })
       .catch((e) => {
         console.error(`${logBase} GET error store=${storeMode}:`, e);
@@ -475,7 +480,10 @@ export function appDataMiddleware(req, res, next) {
                 JSON.stringify({
                   ok: false,
                   error: 'revision_conflict',
-                  current: result.current,
+                  current: {
+                    ...result.current,
+                    persistence: storeMode,
+                  },
                 })
               );
               return;

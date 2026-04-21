@@ -388,13 +388,32 @@ export function appDataMiddleware(req, res, next) {
     return;
   }
 
+  const requestId = `${Date.now().toString(36)}-${Math.random()
+    .toString(36)
+    .slice(2, 8)}`;
+  const storeMode = shouldUseSupabase() ? 'supabase' : 'file';
+  const ip =
+    req.headers['x-forwarded-for']?.toString().split(',')[0]?.trim() ||
+    req.socket?.remoteAddress ||
+    'unknown';
+  const userAgent = String(req.headers['user-agent'] || '');
+  const uaShort = userAgent.length > 120 ? `${userAgent.slice(0, 120)}...` : userAgent;
+  const logBase = `[api/app-data][${requestId}]`;
+
   if (req.method === 'GET') {
+    console.log(`${logBase} GET start store=${storeMode} key=${DATA_KEY} ip=${ip} ua="${uaShort}"`);
     res.setHeader('Content-Type', 'application/json');
     readAppData()
       .then((data) => {
+        console.log(
+          `${logBase} GET ok todo=${Array.isArray(data?.todoItems) ? data.todoItems.length : 0} food=${
+            Array.isArray(data?.foodEntries) ? data.foodEntries.length : 0
+          } spend=${Array.isArray(data?.spendEntries) ? data.spendEntries.length : 0}`
+        );
         res.end(JSON.stringify(data));
       })
       .catch((e) => {
+        console.error(`${logBase} GET error store=${storeMode}:`, e);
         res.statusCode = 500;
         res.end(JSON.stringify({ error: String(e.message) }));
       });
@@ -402,27 +421,38 @@ export function appDataMiddleware(req, res, next) {
   }
 
   if (req.method === 'PUT' || req.method === 'POST') {
+    console.log(
+      `${logBase} ${req.method} start store=${storeMode} key=${DATA_KEY} ip=${ip} ua="${uaShort}"`
+    );
     readBody(req)
       .then((body) => {
+        console.log(`${logBase} ${req.method} body-bytes=${Buffer.byteLength(body || '', 'utf8')}`);
         let data;
         try {
           data = JSON.parse(body || '{}');
         } catch {
+          console.warn(`${logBase} ${req.method} invalid-json`);
           res.statusCode = 400;
           res.end('Invalid JSON');
           return;
         }
         writeAppData(data)
           .then(() => {
+            const normalized = normalizeForSave(data);
+            console.log(
+              `${logBase} ${req.method} ok todo=${normalized.todoItems.length} food=${normalized.foodEntries.length} spend=${normalized.spendEntries.length}`
+            );
             res.setHeader('Content-Type', 'application/json');
             res.end(JSON.stringify({ ok: true }));
           })
           .catch((e) => {
+            console.error(`${logBase} ${req.method} write-error store=${storeMode}:`, e);
             res.statusCode = 500;
             res.end(String(e));
           });
       })
       .catch((e) => {
+        console.error(`${logBase} ${req.method} read-body-error:`, e);
         res.statusCode = 500;
         res.end(String(e));
       });

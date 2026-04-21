@@ -11,6 +11,7 @@ const DATA_KEY = process.env.APP_DATA_KEY || 'daily-routine';
 
 export const DEFAULT_DATA = {
   version: 1,
+  revision: 0,
   todoItems: [],
   daylogItems: [],
   foodEntries: [],
@@ -25,6 +26,9 @@ export function normalizeLoaded(parsed) {
   if (!parsed || typeof parsed !== 'object') return { ...DEFAULT_DATA };
   return {
     version: 1,
+    revision: Number.isFinite(Number(parsed.revision))
+      ? Math.max(0, Math.floor(Number(parsed.revision)))
+      : 0,
     todoItems: Array.isArray(parsed.todoItems) ? parsed.todoItems : [],
     daylogItems: Array.isArray(parsed.daylogItems) ? parsed.daylogItems : [],
     foodEntries: Array.isArray(parsed.foodEntries) ? parsed.foodEntries : [],
@@ -47,6 +51,9 @@ export function normalizeLoaded(parsed) {
 export function normalizeForSave(data) {
   return {
     version: 1,
+    revision: Number.isFinite(Number(data.revision))
+      ? Math.max(0, Math.floor(Number(data.revision)))
+      : 0,
     todoItems: Array.isArray(data.todoItems) ? data.todoItems : [],
     daylogItems: Array.isArray(data.daylogItems) ? data.daylogItems : [],
     foodEntries: Array.isArray(data.foodEntries) ? data.foodEntries : [],
@@ -138,17 +145,29 @@ async function readAppData() {
   return normalizeLoaded(parsed);
 }
 
-async function writeAppData(data) {
-  const normalized = normalizeForSave(data);
-  if (shouldUseSupabase()) {
-    await supabaseUpsertData(normalized);
-    return;
+async function writeAppData(data, expectedRevision) {
+  const current = await readAppData();
+  const hasExpectedRevision = Number.isFinite(Number(expectedRevision));
+  const expected = hasExpectedRevision
+    ? Math.max(0, Math.floor(Number(expectedRevision)))
+    : null;
+
+  if (hasExpectedRevision && current.revision !== expected) {
+    return { ok: false, conflict: true, current };
   }
-  await fs.promises.writeFile(
-    DATA_FILE,
-    JSON.stringify(normalized, null, 2),
-    'utf8'
-  );
+
+  const normalized = normalizeForSave(data);
+  const nextData = {
+    ...normalized,
+    revision: Math.max(0, Math.floor(Number(current.revision) || 0)) + 1,
+  };
+
+  if (shouldUseSupabase()) {
+    await supabaseUpsertData(nextData);
+    return { ok: true, data: nextData };
+  }
+  await fs.promises.writeFile(DATA_FILE, JSON.stringify(nextData, null, 2), 'utf8');
+  return { ok: true, data: nextData };
 }
 
 async function estimateCaloriesViaOpenAi(foodText) {
@@ -406,7 +425,9 @@ export function appDataMiddleware(req, res, next) {
     readAppData()
       .then((data) => {
         console.log(
-          `${logBase} GET ok todo=${Array.isArray(data?.todoItems) ? data.todoItems.length : 0} food=${
+          `${logBase} GET ok rev=${data?.revision ?? 0} todo=${
+            Array.isArray(data?.todoItems) ? data.todoItems.length : 0
+          } food=${
             Array.isArray(data?.foodEntries) ? data.foodEntries.length : 0
           } spend=${Array.isArray(data?.spendEntries) ? data.spendEntries.length : 0}`
         );
@@ -436,14 +457,41 @@ export function appDataMiddleware(req, res, next) {
           res.end('Invalid JSON');
           return;
         }
-        writeAppData(data)
-          .then(() => {
-            const normalized = normalizeForSave(data);
+        const expectedRevision = Number(data?.expectedRevision);
+        const incomingData =
+          data && typeof data === 'object' && data.data && typeof data.data === 'object'
+            ? data.data
+            : data;
+
+        writeAppData(incomingData, expectedRevision)
+          .then((result) => {
+            if (result?.conflict) {
+              console.warn(
+                `${logBase} ${req.method} conflict expected=${Number.isFinite(expectedRevision) ? Math.floor(expectedRevision) : 'none'} current=${result.current?.revision ?? 0}`
+              );
+              res.statusCode = 409;
+              res.setHeader('Content-Type', 'application/json');
+              res.end(
+                JSON.stringify({
+                  ok: false,
+                  error: 'revision_conflict',
+                  current: result.current,
+                })
+              );
+              return;
+            }
+
+            const saved = result?.data || normalizeForSave(incomingData);
             console.log(
-              `${logBase} ${req.method} ok todo=${normalized.todoItems.length} food=${normalized.foodEntries.length} spend=${normalized.spendEntries.length}`
+              `${logBase} ${req.method} ok rev=${saved.revision ?? 0} todo=${saved.todoItems.length} food=${saved.foodEntries.length} spend=${saved.spendEntries.length}`
             );
             res.setHeader('Content-Type', 'application/json');
-            res.end(JSON.stringify({ ok: true }));
+            res.end(
+              JSON.stringify({
+                ok: true,
+                revision: saved.revision ?? 0,
+              })
+            );
           })
           .catch((e) => {
             console.error(`${logBase} ${req.method} write-error store=${storeMode}:`, e);

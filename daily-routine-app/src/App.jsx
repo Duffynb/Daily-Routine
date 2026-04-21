@@ -22,10 +22,13 @@ export default class App extends Component {
       passwordEntries: [],
       calorieGoal: 2000,
       daylogHourlyRate: 300,
+      dataRevision: 0,
       storageLoaded: false,
       persistence: 'unknown',
     };
     this.saveTimer = null;
+    this.persistInFlight = false;
+    this.pendingPersist = false;
   }
 
   componentDidMount() {
@@ -36,31 +39,7 @@ export default class App extends Component {
         return r.json();
       })
       .then((data) => {
-        const todoItems = Array.isArray(data.todoItems) ? data.todoItems : [];
-        const daylogItems = Array.isArray(data.daylogItems) ? data.daylogItems : [];
-        const foodEntries = Array.isArray(data.foodEntries) ? data.foodEntries : [];
-        const foodBurnEntries = Array.isArray(data.foodBurnEntries)
-          ? data.foodBurnEntries
-          : [];
-        const spendEntries = Array.isArray(data.spendEntries) ? data.spendEntries : [];
-        const passwordEntries = Array.isArray(data.passwordEntries)
-          ? data.passwordEntries
-          : [];
-        const calorieGoal = Number.isFinite(Number(data.calorieGoal))
-          ? Number(data.calorieGoal)
-          : 2000;
-        const daylogHourlyRate = Number.isFinite(Number(data.daylogHourlyRate))
-          ? Math.max(0, Math.floor(Number(data.daylogHourlyRate)))
-          : 300;
-        this.setState({
-          todoItems,
-          daylogItems,
-          foodEntries,
-          foodBurnEntries,
-          spendEntries,
-          passwordEntries,
-          calorieGoal,
-          daylogHourlyRate,
+        this.applyServerData(data, {
           storageLoaded: true,
           persistence: 'file',
         });
@@ -85,11 +64,36 @@ export default class App extends Component {
     this.flushPersist();
   };
 
-  flushPersist = () => {
-    if (this.saveTimer) {
-      clearTimeout(this.saveTimer);
-      this.saveTimer = null;
-    }
+  applyServerData = (data, extraState = {}) => {
+    const todoItems = Array.isArray(data?.todoItems) ? data.todoItems : [];
+    const daylogItems = Array.isArray(data?.daylogItems) ? data.daylogItems : [];
+    const foodEntries = Array.isArray(data?.foodEntries) ? data.foodEntries : [];
+    const foodBurnEntries = Array.isArray(data?.foodBurnEntries) ? data.foodBurnEntries : [];
+    const spendEntries = Array.isArray(data?.spendEntries) ? data.spendEntries : [];
+    const passwordEntries = Array.isArray(data?.passwordEntries) ? data.passwordEntries : [];
+    const calorieGoal = Number.isFinite(Number(data?.calorieGoal)) ? Number(data.calorieGoal) : 2000;
+    const daylogHourlyRate = Number.isFinite(Number(data?.daylogHourlyRate))
+      ? Math.max(0, Math.floor(Number(data.daylogHourlyRate)))
+      : 300;
+    const dataRevision = Number.isFinite(Number(data?.revision))
+      ? Math.max(0, Math.floor(Number(data.revision)))
+      : 0;
+
+    this.setState({
+      todoItems,
+      daylogItems,
+      foodEntries,
+      foodBurnEntries,
+      spendEntries,
+      passwordEntries,
+      calorieGoal,
+      daylogHourlyRate,
+      dataRevision,
+      ...extraState,
+    });
+  };
+
+  buildPersistData = () => {
     const {
       todoItems,
       daylogItems,
@@ -99,11 +103,8 @@ export default class App extends Component {
       passwordEntries,
       calorieGoal,
       daylogHourlyRate,
-      storageLoaded,
-      persistence,
     } = this.state;
-    if (!storageLoaded || persistence !== 'file') return;
-    const body = JSON.stringify({
+    return {
       version: 1,
       todoItems,
       daylogItems,
@@ -113,13 +114,62 @@ export default class App extends Component {
       passwordEntries,
       calorieGoal,
       daylogHourlyRate,
-    });
-    fetch('/api/app-data', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body,
-      keepalive: true,
-    }).catch(() => {});
+    };
+  };
+
+  persistNow = async (opts = {}) => {
+    const { keepalive = false } = opts;
+    const { storageLoaded, persistence, dataRevision } = this.state;
+    if (!storageLoaded || persistence !== 'file') return;
+    if (this.persistInFlight) {
+      this.pendingPersist = true;
+      return;
+    }
+
+    this.persistInFlight = true;
+    try {
+      const response = await fetch('/api/app-data', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          expectedRevision: dataRevision,
+          data: this.buildPersistData(),
+        }),
+        keepalive,
+      });
+
+      if (response.status === 409) {
+        const conflictPayload = await response.json().catch(() => null);
+        const current = conflictPayload?.current;
+        if (current && typeof current === 'object') {
+          this.applyServerData(current);
+          this.pendingPersist = true;
+        }
+        return;
+      }
+
+      if (!response.ok) return;
+      const payload = await response.json().catch(() => null);
+      if (Number.isFinite(Number(payload?.revision))) {
+        this.setState({ dataRevision: Math.max(0, Math.floor(Number(payload.revision))) });
+      }
+    } catch {
+      // no-op, next user change will retry persist
+    } finally {
+      this.persistInFlight = false;
+      if (this.pendingPersist) {
+        this.pendingPersist = false;
+        this.persistNow();
+      }
+    }
+  };
+
+  flushPersist = () => {
+    if (this.saveTimer) {
+      clearTimeout(this.saveTimer);
+      this.saveTimer = null;
+    }
+    this.persistNow({ keepalive: true });
   };
 
   schedulePersist = () => {
@@ -128,31 +178,7 @@ export default class App extends Component {
     if (this.saveTimer) clearTimeout(this.saveTimer);
     this.saveTimer = setTimeout(() => {
       this.saveTimer = null;
-      const {
-        todoItems,
-        daylogItems,
-        foodEntries,
-        foodBurnEntries,
-        spendEntries,
-        passwordEntries,
-        calorieGoal,
-        daylogHourlyRate,
-      } = this.state;
-      fetch('/api/app-data', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          version: 1,
-          todoItems,
-          daylogItems,
-          foodEntries,
-          foodBurnEntries,
-          spendEntries,
-          passwordEntries,
-          calorieGoal,
-          daylogHourlyRate,
-        }),
-      }).catch(() => {});
+      this.persistNow();
     }, SAVE_DEBOUNCE_MS);
   };
 

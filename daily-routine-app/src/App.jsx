@@ -47,6 +47,7 @@ export default class App extends Component {
       cup: null,
       lfo: null,
       panner: null,
+      dingTimeout: null,
     };
   }
 
@@ -178,7 +179,7 @@ export default class App extends Component {
       const Ctx = window.AudioContext || window.webkitAudioContext;
       const ctx = new Ctx();
       const master = ctx.createGain();
-      master.gain.value = 0.055;
+      master.gain.value = 0.072;
       master.connect(ctx.destination);
 
       const noiseBuffer = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate);
@@ -249,19 +250,57 @@ export default class App extends Component {
       lfo.start();
       pannerLfo.start();
 
-      this.relaxAudio = { ctx, master, noise, hum1, hum2, cup, lfo, panner };
+      this.relaxAudio = { ctx, master, noise, hum1, hum2, cup, lfo, panner, dingTimeout: null };
+      this.scheduleCupDing();
     }
     if (this.relaxAudio.ctx.state === 'suspended') {
       await this.relaxAudio.ctx.resume();
     }
+    this.scheduleCupDing();
   };
 
   stopRelaxAudio = () => {
-    const { ctx } = this.relaxAudio;
+    const { ctx, dingTimeout } = this.relaxAudio;
+    if (dingTimeout) {
+      window.clearTimeout(dingTimeout);
+      this.relaxAudio.dingTimeout = null;
+    }
     if (!ctx) return;
     if (ctx.state === 'running') {
       ctx.suspend().catch(() => {});
     }
+  };
+
+  scheduleCupDing = () => {
+    const { ctx, dingTimeout } = this.relaxAudio;
+    if (!ctx || ctx.state !== 'running') return;
+    if (dingTimeout) return;
+    const delayMs = 8000 + Math.random() * 14000;
+    this.relaxAudio.dingTimeout = window.setTimeout(() => {
+      this.relaxAudio.dingTimeout = null;
+      this.triggerCupDing();
+      this.scheduleCupDing();
+    }, delayMs);
+  };
+
+  triggerCupDing = () => {
+    const { ctx, master } = this.relaxAudio;
+    if (!ctx || !master || ctx.state !== 'running') return;
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(1150 + Math.random() * 180, now);
+    osc.frequency.exponentialRampToValueAtTime(760 + Math.random() * 100, now + 0.24);
+
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(0.022, now + 0.015);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.42);
+
+    osc.connect(gain);
+    gain.connect(master);
+    osc.start(now);
+    osc.stop(now + 0.5);
   };
 
   handleBeforeUnload = () => {

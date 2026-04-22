@@ -250,7 +250,7 @@ export default class TodoPage extends Component {
                 return (
               <li
                 key={item.id}
-                className={`list-row${item.completed ? ' completed' : ''}${
+                className={`list-row list-row--todo${item.completed ? ' completed' : ''}${
                   dueStatus === 'scheduled' ? ' list-row--todo-has-due' : ''
                 }${
                   dueStatus === 'overdue' ? ' list-row--todo-overdue' : ''

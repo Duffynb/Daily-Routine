@@ -28,14 +28,20 @@ export default class App extends Component {
       syncStatus: 'idle',
       storageLoaded: false,
       persistence: 'unknown',
+      relaxNowTick: Date.now(),
+      relaxAmbientOn: false,
     };
     this.saveTimer = null;
     this.persistInFlight = false;
     this.pendingPersist = false;
+    this.relaxClockTimer = null;
   }
 
   componentDidMount() {
     window.addEventListener('beforeunload', this.handleBeforeUnload);
+    this.relaxClockTimer = window.setInterval(() => {
+      this.setState({ relaxNowTick: Date.now() });
+    }, 1000);
     fetch('/api/app-data')
       .then((r) => {
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
@@ -62,11 +68,22 @@ export default class App extends Component {
 
   componentWillUnmount() {
     window.removeEventListener('beforeunload', this.handleBeforeUnload);
+    if (this.relaxClockTimer) {
+      window.clearInterval(this.relaxClockTimer);
+      this.relaxClockTimer = null;
+    }
     if (this.saveTimer) {
       clearTimeout(this.saveTimer);
       this.saveTimer = null;
     }
   }
+
+  formatRelaxTime = (timestamp) =>
+    new Date(timestamp).toLocaleTimeString('cs-CZ', {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    });
 
   handleBeforeUnload = () => {
     this.flushPersist();
@@ -321,6 +338,30 @@ export default class App extends Component {
       );
     }
 
+    if (page === 'relax') {
+      const { relaxNowTick, relaxAmbientOn } = this.state;
+      return (
+        <div className={`relax-view${relaxAmbientOn ? ' relax-view--ambient' : ''}`} aria-label="Relax view">
+          <div className="relax-card">
+            <div className="relax-clock">{this.formatRelaxTime(relaxNowTick)}</div>
+            <div className="relax-breath-wrap">
+              <div className="relax-breath-cup" aria-hidden>
+                <span className="relax-breath-cup-icon">☕</span>
+              </div>
+            </div>
+            <p className="relax-breath-hint">Nádech 4s · drž 4s · výdech 6s</p>
+            <button
+              type="button"
+              className="btn"
+              onClick={() => this.setState((s) => ({ relaxAmbientOn: !s.relaxAmbientOn }))}
+            >
+              {relaxAmbientOn ? 'Ambient OFF' : 'Ambient ON'}
+            </button>
+          </div>
+        </div>
+      );
+    }
+
     if (page === 'life') {
       return (
       <LifeManagerPage
@@ -446,6 +487,13 @@ export default class App extends Component {
                 onClick={() => this.setState({ page: 'password' })}
               >
                 Password manager
+              </button>
+              <button
+                type="button"
+                className={`menu-item${page === 'relax' ? ' active' : ''}`}
+                onClick={() => this.setState({ page: 'relax' })}
+              >
+                Relax
               </button>
             </nav>
           </aside>

@@ -412,8 +412,8 @@ export default class DaylogPage extends Component {
       return;
     }
 
-    const spentMinutes = parseDurationToMinutes(timeRaw);
-    if (spentMinutes === null) {
+    const spentMinutes = timeRaw === '' ? null : parseDurationToMinutes(timeRaw);
+    if (timeRaw !== '' && spentMinutes === null) {
       this.setState({
         timeError:
           'Neplatný čas. Použijte např. 30m, 1h nebo 1h 30m (mezeru mezi h a m lze vynechat).',
@@ -469,9 +469,10 @@ export default class DaylogPage extends Component {
     this.setState({
       editingId: item.id,
       editUrl: href || '',
-      editTime: formatMinutes(
-        item.spentMinutes != null ? item.spentMinutes : 0
-      ),
+      editTime:
+        item.spentMinutes != null
+          ? formatMinutes(item.spentMinutes)
+          : '',
       editDesc: item.description,
       editError: '',
     });
@@ -511,8 +512,8 @@ export default class DaylogPage extends Component {
       return;
     }
 
-    const spentMinutes = parseDurationToMinutes(timeRaw);
-    if (spentMinutes === null) {
+    const spentMinutes = timeRaw === '' ? null : parseDurationToMinutes(timeRaw);
+    if (timeRaw !== '' && spentMinutes === null) {
       this.setState({
         editError:
           'Neplatný čas. Použijte např. 30m, 1h nebo 1h 30m.',
@@ -589,8 +590,11 @@ export default class DaylogPage extends Component {
     return (
       <>
         {this.renderIssueCell(item)}
-        <span className="daylog-time" title="Strávený čas">
-          {formatMinutes(item.spentMinutes != null ? item.spentMinutes : 0)}
+        <span
+          className={`daylog-time${item.spentMinutes == null ? ' daylog-time--missing' : ''}`}
+          title={item.spentMinutes == null ? 'Chybí odpracovaný čas' : 'Strávený čas'}
+        >
+          {item.spentMinutes != null ? formatMinutes(item.spentMinutes) : 'CHYBÍ ČAS'}
         </span>
         <span
           role="button"
@@ -833,7 +837,7 @@ export default class DaylogPage extends Component {
           <input
             type="text"
             className="daylog-time-input"
-            placeholder="Čas (30m, 1h 30m)"
+            placeholder="Čas nepovinný (30m, 1h 30m)"
             value={timeDraft}
             onChange={this.handleTimeChange}
             onKeyDown={this.handleKeyDown}
@@ -942,7 +946,7 @@ export default class DaylogPage extends Component {
         ) : null}
         {items.length === 0 ? (
           <p className="empty-hint">
-            Zatím žádné záznamy — vložte odkaz na issue, čas a krátký popis.
+            Zatím žádné záznamy — vložte odkaz na issue, popis a případně čas.
           </p>
         ) : (
           keys.map((key) => {
@@ -976,7 +980,9 @@ export default class DaylogPage extends Component {
                       key={item.id}
                       className={`list-row daylog-as-row${
                         item.completed ? ' completed' : ''
-                      }${editingId === item.id ? ' list-row--daylog-edit' : ''}`}
+                      }${editingId === item.id ? ' list-row--daylog-edit' : ''}${
+                        item.spentMinutes == null ? ' daylog-as-row--missing-time' : ''
+                      }`}
                     >
                       {editingId === item.id
                         ? this.renderRowEdit(item)

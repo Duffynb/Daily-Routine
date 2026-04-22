@@ -30,12 +30,15 @@ export default class App extends Component {
       persistence: 'unknown',
       relaxNowTick: Date.now(),
       relaxAmbientOn: false,
+      relaxSoundOn: false,
+      relaxSoundError: '',
     };
     this.saveTimer = null;
     this.persistInFlight = false;
     this.pendingPersist = false;
     this.relaxClockTimer = null;
     this.wakeLock = null;
+    this.relaxAudioRef = React.createRef();
   }
 
   componentDidMount() {
@@ -87,6 +90,12 @@ export default class App extends Component {
       if (this.state.page === 'relax') this.requestWakeLock();
       else this.releaseWakeLock();
     }
+    if (
+      prevState.page !== this.state.page ||
+      prevState.relaxSoundOn !== this.state.relaxSoundOn
+    ) {
+      this.syncRelaxAudio();
+    }
   }
 
   formatRelaxTime = (timestamp) =>
@@ -125,8 +134,32 @@ export default class App extends Component {
     if (this.state.page !== 'relax') return;
     if (document.visibilityState === 'visible') {
       this.requestWakeLock();
+      this.syncRelaxAudio();
     } else {
       this.releaseWakeLock();
+      this.syncRelaxAudio();
+    }
+  };
+
+  syncRelaxAudio = async () => {
+    const audio = this.relaxAudioRef.current;
+    if (!audio) return;
+    const shouldPlay =
+      this.state.page === 'relax' &&
+      this.state.relaxSoundOn &&
+      document.visibilityState === 'visible';
+    if (!shouldPlay) {
+      audio.pause();
+      return;
+    }
+    try {
+      await audio.play();
+      if (this.state.relaxSoundError) this.setState({ relaxSoundError: '' });
+    } catch {
+      this.setState({
+        relaxSoundError:
+          'Zvuk se nepodarilo spustit (zkuste kliknout znovu).',
+      });
     }
   };
 
@@ -384,24 +417,47 @@ export default class App extends Component {
     }
 
     if (page === 'relax') {
-      const { relaxNowTick, relaxAmbientOn } = this.state;
+      const { relaxNowTick, relaxAmbientOn, relaxSoundOn, relaxSoundError } = this.state;
       return (
         <div className={`relax-view${relaxAmbientOn ? ' relax-view--ambient' : ''}`} aria-label="Relax view">
-          <div className="relax-card">
+          <audio
+            ref={this.relaxAudioRef}
+            src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"
+            preload="none"
+            loop
+          />
+          <div className={`relax-card${relaxAmbientOn ? ' relax-card--ambient' : ''}`}>
             <div className="relax-clock">{this.formatRelaxTime(relaxNowTick)}</div>
             <div className="relax-breath-wrap">
               <div className="relax-breath-cup" aria-hidden>
                 <span className="relax-breath-cup-icon">☕</span>
+                {relaxAmbientOn ? <span className="relax-steam" /> : null}
               </div>
             </div>
-            <p className="relax-breath-hint">Nádech 4s · drž 4s · výdech 6s</p>
+            <p className="relax-breath-hint">
+              Nádech 4s · drž 4s · výdech 6s
+              {relaxAmbientOn ? ' · ambient aktivní' : ''}
+            </p>
             <button
               type="button"
-              className="btn"
+              className={`btn${relaxAmbientOn ? ' btn-primary' : ''}`}
               onClick={() => this.setState((s) => ({ relaxAmbientOn: !s.relaxAmbientOn }))}
             >
               {relaxAmbientOn ? 'Ambient OFF' : 'Ambient ON'}
             </button>
+            <button
+              type="button"
+              className={`btn${relaxSoundOn ? ' btn-primary' : ''}`}
+              onClick={() =>
+                this.setState((s) => ({
+                  relaxSoundOn: !s.relaxSoundOn,
+                  relaxSoundError: '',
+                }))
+              }
+            >
+              {relaxSoundOn ? 'Café sound OFF' : 'Café sound ON'}
+            </button>
+            {relaxSoundError ? <p className="relax-audio-error">{relaxSoundError}</p> : null}
           </div>
         </div>
       );

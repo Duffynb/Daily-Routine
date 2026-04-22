@@ -38,7 +38,16 @@ export default class App extends Component {
     this.pendingPersist = false;
     this.relaxClockTimer = null;
     this.wakeLock = null;
-    this.relaxAudioRef = React.createRef();
+    this.relaxAudio = {
+      ctx: null,
+      master: null,
+      noise: null,
+      hum1: null,
+      hum2: null,
+      cup: null,
+      lfo: null,
+      panner: null,
+    };
   }
 
   componentDidMount() {
@@ -78,6 +87,7 @@ export default class App extends Component {
       window.clearInterval(this.relaxClockTimer);
       this.relaxClockTimer = null;
     }
+    this.stopRelaxAudio();
     this.releaseWakeLock();
     if (this.saveTimer) {
       clearTimeout(this.saveTimer);
@@ -142,24 +152,115 @@ export default class App extends Component {
   };
 
   syncRelaxAudio = async () => {
-    const audio = this.relaxAudioRef.current;
-    if (!audio) return;
     const shouldPlay =
       this.state.page === 'relax' &&
       this.state.relaxSoundOn &&
       document.visibilityState === 'visible';
     if (!shouldPlay) {
-      audio.pause();
+      this.stopRelaxAudio();
       return;
     }
     try {
-      await audio.play();
+      await this.startRelaxAudio();
       if (this.state.relaxSoundError) this.setState({ relaxSoundError: '' });
     } catch {
       this.setState({
-        relaxSoundError:
-          'Zvuk se nepodarilo spustit (zkuste kliknout znovu).',
+        relaxSoundError: 'Zvuk se nepodarilo spustit (zkuste kliknout znovu).',
       });
+    }
+  };
+
+  startRelaxAudio = async () => {
+    if (!window.AudioContext && !window.webkitAudioContext) {
+      throw new Error('AudioContext not supported');
+    }
+    if (!this.relaxAudio.ctx) {
+      const Ctx = window.AudioContext || window.webkitAudioContext;
+      const ctx = new Ctx();
+      const master = ctx.createGain();
+      master.gain.value = 0.055;
+      master.connect(ctx.destination);
+
+      const noiseBuffer = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate);
+      const channel = noiseBuffer.getChannelData(0);
+      for (let i = 0; i < channel.length; i += 1) {
+        channel[i] = (Math.random() * 2 - 1) * 0.45;
+      }
+      const noise = ctx.createBufferSource();
+      noise.buffer = noiseBuffer;
+      noise.loop = true;
+      const noiseFilter = ctx.createBiquadFilter();
+      noiseFilter.type = 'lowpass';
+      noiseFilter.frequency.value = 900;
+      const noiseGain = ctx.createGain();
+      noiseGain.gain.value = 0.26;
+      noise.connect(noiseFilter);
+      noiseFilter.connect(noiseGain);
+      noiseGain.connect(master);
+
+      const hum1 = ctx.createOscillator();
+      hum1.type = 'sine';
+      hum1.frequency.value = 96;
+      const hum1Gain = ctx.createGain();
+      hum1Gain.gain.value = 0.06;
+      hum1.connect(hum1Gain);
+      hum1Gain.connect(master);
+
+      const hum2 = ctx.createOscillator();
+      hum2.type = 'sine';
+      hum2.frequency.value = 142;
+      const hum2Gain = ctx.createGain();
+      hum2Gain.gain.value = 0.03;
+      hum2.connect(hum2Gain);
+      hum2Gain.connect(master);
+
+      const cup = ctx.createOscillator();
+      cup.type = 'triangle';
+      cup.frequency.value = 226;
+      const cupGain = ctx.createGain();
+      cupGain.gain.value = 0.0;
+      const lfo = ctx.createOscillator();
+      lfo.type = 'sine';
+      lfo.frequency.value = 0.08;
+      const lfoGain = ctx.createGain();
+      lfoGain.gain.value = 0.013;
+      lfo.connect(lfoGain);
+      lfoGain.connect(cupGain.gain);
+      cup.connect(cupGain);
+      cupGain.connect(master);
+
+      const panner = ctx.createStereoPanner();
+      panner.pan.value = 0.0;
+      const pannerLfo = ctx.createOscillator();
+      pannerLfo.type = 'sine';
+      pannerLfo.frequency.value = 0.035;
+      const pannerLfoGain = ctx.createGain();
+      pannerLfoGain.gain.value = 0.25;
+      pannerLfo.connect(pannerLfoGain);
+      pannerLfoGain.connect(panner.pan);
+      master.disconnect();
+      master.connect(panner);
+      panner.connect(ctx.destination);
+
+      noise.start();
+      hum1.start();
+      hum2.start();
+      cup.start();
+      lfo.start();
+      pannerLfo.start();
+
+      this.relaxAudio = { ctx, master, noise, hum1, hum2, cup, lfo, panner };
+    }
+    if (this.relaxAudio.ctx.state === 'suspended') {
+      await this.relaxAudio.ctx.resume();
+    }
+  };
+
+  stopRelaxAudio = () => {
+    const { ctx } = this.relaxAudio;
+    if (!ctx) return;
+    if (ctx.state === 'running') {
+      ctx.suspend().catch(() => {});
     }
   };
 
@@ -420,12 +521,6 @@ export default class App extends Component {
       const { relaxNowTick, relaxAmbientOn, relaxSoundOn, relaxSoundError } = this.state;
       return (
         <div className={`relax-view${relaxAmbientOn ? ' relax-view--ambient' : ''}`} aria-label="Relax view">
-          <audio
-            ref={this.relaxAudioRef}
-            src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"
-            preload="none"
-            loop
-          />
           <div className={`relax-card${relaxAmbientOn ? ' relax-card--ambient' : ''}`}>
             <div className="relax-clock">{this.formatRelaxTime(relaxNowTick)}</div>
             <div className="relax-breath-wrap">

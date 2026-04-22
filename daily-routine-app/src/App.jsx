@@ -35,10 +35,12 @@ export default class App extends Component {
     this.persistInFlight = false;
     this.pendingPersist = false;
     this.relaxClockTimer = null;
+    this.wakeLock = null;
   }
 
   componentDidMount() {
     window.addEventListener('beforeunload', this.handleBeforeUnload);
+    document.addEventListener('visibilitychange', this.handleVisibilityChange);
     this.relaxClockTimer = window.setInterval(() => {
       this.setState({ relaxNowTick: Date.now() });
     }, 1000);
@@ -68,13 +70,22 @@ export default class App extends Component {
 
   componentWillUnmount() {
     window.removeEventListener('beforeunload', this.handleBeforeUnload);
+    document.removeEventListener('visibilitychange', this.handleVisibilityChange);
     if (this.relaxClockTimer) {
       window.clearInterval(this.relaxClockTimer);
       this.relaxClockTimer = null;
     }
+    this.releaseWakeLock();
     if (this.saveTimer) {
       clearTimeout(this.saveTimer);
       this.saveTimer = null;
+    }
+  }
+
+  componentDidUpdate(_prevProps, prevState) {
+    if (prevState.page !== this.state.page) {
+      if (this.state.page === 'relax') this.requestWakeLock();
+      else this.releaseWakeLock();
     }
   }
 
@@ -84,6 +95,40 @@ export default class App extends Component {
       minute: '2-digit',
       second: '2-digit',
     });
+
+  requestWakeLock = async () => {
+    try {
+      if (!('wakeLock' in navigator)) return;
+      if (document.visibilityState !== 'visible') return;
+      if (this.wakeLock) return;
+      this.wakeLock = await navigator.wakeLock.request('screen');
+      this.wakeLock.addEventListener('release', () => {
+        this.wakeLock = null;
+      });
+    } catch {
+      // Browser may deny wake lock; relax page still works.
+    }
+  };
+
+  releaseWakeLock = async () => {
+    try {
+      if (this.wakeLock) {
+        await this.wakeLock.release();
+        this.wakeLock = null;
+      }
+    } catch {
+      this.wakeLock = null;
+    }
+  };
+
+  handleVisibilityChange = () => {
+    if (this.state.page !== 'relax') return;
+    if (document.visibilityState === 'visible') {
+      this.requestWakeLock();
+    } else {
+      this.releaseWakeLock();
+    }
+  };
 
   handleBeforeUnload = () => {
     this.flushPersist();

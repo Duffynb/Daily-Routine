@@ -23,6 +23,9 @@ export default class App extends Component {
       calorieGoal: 2000,
       daylogHourlyRate: 300,
       dataRevision: 0,
+      lastServerUpdatedAt: null,
+      lastSyncedAt: null,
+      syncStatus: 'idle',
       storageLoaded: false,
       persistence: 'unknown',
     };
@@ -83,6 +86,10 @@ export default class App extends Component {
     const dataRevision = Number.isFinite(Number(data?.revision))
       ? Math.max(0, Math.floor(Number(data.revision)))
       : 0;
+    const lastServerUpdatedAt =
+      typeof data?.updatedAt === 'string' && data.updatedAt.trim() !== ''
+        ? data.updatedAt
+        : null;
 
     this.setState({
       todoItems,
@@ -94,7 +101,22 @@ export default class App extends Component {
       calorieGoal,
       daylogHourlyRate,
       dataRevision,
+      lastServerUpdatedAt,
       ...extraState,
+    });
+  };
+
+  formatDateTime = (value) => {
+    if (!value) return 'neznamy';
+    const d = new Date(value);
+    if (Number.isNaN(d.getTime())) return 'neznamy';
+    return d.toLocaleString('cs-CZ', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
     });
   };
 
@@ -132,6 +154,7 @@ export default class App extends Component {
     }
 
     this.persistInFlight = true;
+    this.setState({ syncStatus: 'saving' });
     try {
       const response = await fetch('/api/app-data', {
         method: 'PUT',
@@ -147,19 +170,41 @@ export default class App extends Component {
         const conflictPayload = await response.json().catch(() => null);
         const current = conflictPayload?.current;
         if (current && typeof current === 'object') {
-          this.applyServerData(current);
+          const currentRevision = Number.isFinite(Number(current.revision))
+            ? Math.max(0, Math.floor(Number(current.revision)))
+            : 0;
+          const lastServerUpdatedAt =
+            typeof current.updatedAt === 'string' && current.updatedAt.trim() !== ''
+              ? current.updatedAt
+              : null;
+          this.setState({
+            dataRevision: currentRevision,
+            lastServerUpdatedAt,
+            syncStatus: 'conflict',
+          });
           this.pendingPersist = true;
         }
         return;
       }
 
-      if (!response.ok) return;
-      const payload = await response.json().catch(() => null);
-      if (Number.isFinite(Number(payload?.revision))) {
-        this.setState({ dataRevision: Math.max(0, Math.floor(Number(payload.revision))) });
+      if (!response.ok) {
+        this.setState({ syncStatus: 'error' });
+        return;
       }
+      const payload = await response.json().catch(() => null);
+      this.setState({
+        dataRevision: Number.isFinite(Number(payload?.revision))
+          ? Math.max(0, Math.floor(Number(payload.revision)))
+          : dataRevision,
+        lastServerUpdatedAt:
+          typeof payload?.updatedAt === 'string' && payload.updatedAt.trim() !== ''
+            ? payload.updatedAt
+            : this.state.lastServerUpdatedAt,
+        lastSyncedAt: new Date().toISOString(),
+        syncStatus: 'ok',
+      });
     } catch {
-      // no-op, next user change will retry persist
+      this.setState({ syncStatus: 'error' });
     } finally {
       this.persistInFlight = false;
       if (this.pendingPersist) {
@@ -305,7 +350,16 @@ export default class App extends Component {
   }
 
   render() {
-    const { page, theme, storageLoaded, persistence } = this.state;
+    const { page, theme, storageLoaded, persistence, lastServerUpdatedAt, lastSyncedAt, syncStatus } =
+      this.state;
+    const syncStatusLabel =
+      syncStatus === 'saving'
+        ? 'ukladam'
+        : syncStatus === 'conflict'
+          ? 'kolize-resync'
+          : syncStatus === 'error'
+            ? 'chyba sync'
+            : 'ok';
     return (
       <div className={`app-shell app-shell--${theme}`}>
         <header className="app-header">
@@ -318,15 +372,23 @@ export default class App extends Component {
             <h1>Daily routine</h1>
           </div>
           <div className="app-header-right">
-            <span className="app-header-tag">
-              {persistence === 'supabase'
-                ? 'Data v Supabase'
-                : persistence === 'file'
-                  ? 'Data v souboru local-app-data.json'
-                : persistence === 'none'
-                  ? 'Bez API — spusťte npm run dev nebo npm run preview pro ukládání do souboru'
-                  : '...'}
-            </span>
+            <div className="app-header-tag">
+              <div>
+                {persistence === 'supabase'
+                  ? 'Data v Supabase'
+                  : persistence === 'file'
+                    ? 'Data v souboru local-app-data.json'
+                    : persistence === 'none'
+                      ? 'Bez API — spusťte npm run dev nebo npm run preview pro ukládání do souboru'
+                      : '...'}
+              </div>
+              <div>
+                Posledni uprava dat: {this.formatDateTime(lastServerUpdatedAt)}
+              </div>
+              <div>
+                Posledni sync klienta: {this.formatDateTime(lastSyncedAt)} ({syncStatusLabel})
+              </div>
+            </div>
             <button
               type="button"
               className="theme-toggle-btn"

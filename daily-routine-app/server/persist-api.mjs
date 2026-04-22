@@ -12,6 +12,7 @@ const DATA_KEY = process.env.APP_DATA_KEY || 'daily-routine';
 export const DEFAULT_DATA = {
   version: 1,
   revision: 0,
+  updatedAt: null,
   todoItems: [],
   daylogItems: [],
   foodEntries: [],
@@ -29,6 +30,10 @@ export function normalizeLoaded(parsed) {
     revision: Number.isFinite(Number(parsed.revision))
       ? Math.max(0, Math.floor(Number(parsed.revision)))
       : 0,
+    updatedAt:
+      typeof parsed.updatedAt === 'string' && parsed.updatedAt.trim() !== ''
+        ? parsed.updatedAt
+        : null,
     todoItems: Array.isArray(parsed.todoItems) ? parsed.todoItems : [],
     daylogItems: Array.isArray(parsed.daylogItems) ? parsed.daylogItems : [],
     foodEntries: Array.isArray(parsed.foodEntries) ? parsed.foodEntries : [],
@@ -54,6 +59,10 @@ export function normalizeForSave(data) {
     revision: Number.isFinite(Number(data.revision))
       ? Math.max(0, Math.floor(Number(data.revision)))
       : 0,
+    updatedAt:
+      typeof data.updatedAt === 'string' && data.updatedAt.trim() !== ''
+        ? data.updatedAt
+        : null,
     todoItems: Array.isArray(data.todoItems) ? data.todoItems : [],
     daylogItems: Array.isArray(data.daylogItems) ? data.daylogItems : [],
     foodEntries: Array.isArray(data.foodEntries) ? data.foodEntries : [],
@@ -160,6 +169,7 @@ async function writeAppData(data, expectedRevision) {
   const nextData = {
     ...normalized,
     revision: Math.max(0, Math.floor(Number(current.revision) || 0)) + 1,
+    updatedAt: new Date().toISOString(),
   };
 
   if (shouldUseSupabase()) {
@@ -498,6 +508,7 @@ export function appDataMiddleware(req, res, next) {
               JSON.stringify({
                 ok: true,
                 revision: saved.revision ?? 0,
+                updatedAt: saved.updatedAt ?? null,
               })
             );
           })

@@ -1,15 +1,35 @@
 {
   "version": 1,
+  "revision": 237,
+  "updatedAt": "2026-04-29T17:23:25.486Z",
   "todoItems": [
     {
       "id": "1776628426156-mwbg7v5",
       "text": "zadat dovolenou na Barcelonu a klídek",
-      "completed": false,
-      "dueAt": "2026-04-20T10:53:00.000Z"
+      "dueAt": "2026-04-20T10:53:00.000Z",
+      "completed": false
+    },
+    {
+      "id": "1777275396327-jyskjke",
+      "text": "naštudovat si Barcelonu - kouknout jak funguje ubytko a cestování. booking.com, bolt ....",
+      "dueAt": null,
+      "completed": false
+    },
+    {
+      "id": "1776867992677-9qsnz66",
+      "text": "Coufal",
+      "dueAt": null,
+      "completed": false
     },
     {
       "id": "1776105377868-yoomrqz",
       "text": "domluvit kočičí kavárnu",
+      "completed": false
+    },
+    {
+      "id": "1777386544750-f0f3zim",
+      "text": "Zkontrolovat termín 5 září berounský drak",
+      "dueAt": null,
       "completed": false
     },
     {
@@ -23,28 +43,46 @@
       "completed": false
     },
     {
-      "id": "1776704750301-m1yz9me",
-      "text": "test",
-      "completed": false,
-      "dueAt": null
+      "id": "1777386559116-qu387ux",
+      "text": "Doplnit do apky kalendář",
+      "dueAt": null,
+      "completed": false
+    },
+    {
+      "id": "1777446872178-unwoux3",
+      "text": "přidat do appky zapomínáček - KnowHowlog",
+      "dueAt": null,
+      "completed": false
+    },
+    {
+      "id": "1777028118201-pienzrm",
+      "text": "zaplatit SBD",
+      "dueAt": "2026-04-27T17:36:00.000Z",
+      "completed": true
+    },
+    {
+      "id": "1776932664671-uuzlmmw",
+      "text": "ALZA",
+      "dueAt": "2026-04-22T08:24:00.000Z",
+      "completed": true
     },
     {
       "id": "1776104457511-84kerk9",
       "text": "doplánovat klídek",
-      "completed": true,
-      "dueAt": "2026-04-22T15:55:00.000Z"
+      "dueAt": "2026-04-22T15:55:00.000Z",
+      "completed": true
     },
     {
       "id": "1776251930514-rcsftvq",
       "text": "inkaso",
-      "completed": true,
-      "dueAt": "2026-04-15T16:19:00.000Z"
+      "dueAt": "2026-04-15T16:19:00.000Z",
+      "completed": true
     },
     {
       "id": "1776406115931-ytwlduw",
       "text": "zaplatit Kqarolínu",
-      "completed": true,
-      "dueAt": "2026-04-17T06:08:00.000Z"
+      "dueAt": "2026-04-17T06:08:00.000Z",
+      "completed": true
     },
     {
       "id": "1776154946732-jqz6c9v",
@@ -55,266 +93,522 @@
   "daylogItems": [
     {
       "id": "1776104518044-mbfvxwe",
-      "description": "jcu sso chyba",
-      "spentMinutes": 90,
-      "createdAt": "2026-04-13T18:21:58.044Z",
+      "issueUrl": "https://git.ders.cz/simplifyworks/apps/jcu-eoc/-/issues/219",
       "completed": false,
-      "issueUrl": "https://git.ders.cz/simplifyworks/apps/jcu-eoc/-/issues/219"
+      "createdAt": "2026-04-13T18:21:58.044Z",
+      "description": "jcu sso chyba",
+      "spentMinutes": 90
     },
     {
       "id": "1776104549959-ycss3qs",
-      "description": "rozsireni xml programu",
-      "spentMinutes": 90,
-      "createdAt": "2026-04-13T18:22:29.959Z",
+      "issueUrl": "https://git.ders.cz/simplifyworks/modules/eoc/-/issues/2875",
       "completed": false,
-      "issueUrl": "https://git.ders.cz/simplifyworks/modules/eoc/-/issues/2875"
+      "createdAt": "2026-04-13T18:22:29.959Z",
+      "description": "rozsireni xml programu",
+      "spentMinutes": 90
     },
     {
       "id": "1776104568625-toizsjl",
-      "description": "app error po matějovi",
-      "spentMinutes": 60,
-      "createdAt": "2026-04-13T18:22:48.625Z",
+      "issueUrl": "https://git.ders.cz/simplifyworks/modules/eoc/-/issues/2884",
       "completed": false,
-      "issueUrl": "https://git.ders.cz/simplifyworks/modules/eoc/-/issues/2884"
+      "createdAt": "2026-04-13T18:22:48.625Z",
+      "description": "app error po matějovi",
+      "spentMinutes": 60
     },
     {
       "id": "1776105070156-fyszl6n",
       "issueUrl": "https://git.ders.cz/simplifyworks/modules/eoc/-/issues/2859",
-      "description": "pole strava",
-      "spentMinutes": 210,
+      "completed": false,
       "createdAt": "2026-04-13T18:31:10.156Z",
-      "completed": false
+      "description": "pole strava",
+      "spentMinutes": 210
     },
     {
       "id": "1776105081884-081bq9y",
       "issueUrl": "https://git.ders.cz/simplifyworks/modules/eoc/-/issues/2572",
-      "description": "rešerše kolem platební metody",
-      "spentMinutes": 30,
+      "completed": false,
       "createdAt": "2026-04-13T18:31:21.884Z",
-      "completed": false
+      "description": "rešerše kolem platební metody",
+      "spentMinutes": 30
     },
     {
       "id": "1776149346892-898lc43",
       "issueUrl": "https://git.ders.cz/simplifyworks/modules/eoc/-/issues/2572",
-      "description": "plat. metoda programy",
-      "spentMinutes": 60,
+      "completed": true,
       "createdAt": "2026-04-14T06:49:06.892Z",
-      "completed": true
+      "description": "plat. metoda programy",
+      "spentMinutes": 60
     },
     {
       "id": "1776154699231-9vt25i9",
       "issueUrl": "https://git.ders.cz/simplifyworks/development/-/issues/7#note_923917",
-      "description": "dev sync",
-      "spentMinutes": 60,
+      "completed": true,
       "createdAt": "2026-04-14T08:18:19.231Z",
-      "completed": true
+      "description": "dev sync",
+      "spentMinutes": 60
     },
     {
       "id": "1776167615254-a4ognzo",
       "issueUrl": "https://git.ders.cz/firma/prj/schuzky-porady-akce/-/issues/30",
-      "description": "pohovor",
-      "spentMinutes": 60,
+      "completed": true,
       "createdAt": "2026-04-14T11:53:35.254Z",
-      "completed": true
+      "description": "pohovor",
+      "spentMinutes": 60
     },
     {
       "id": "1776167735534-3fbx3qz",
       "issueUrl": "https://git.ders.cz/simplifyworks/apps/jcu-eoc/-/issues/223",
-      "description": "KOPLA",
-      "spentMinutes": 120,
+      "completed": true,
       "createdAt": "2026-04-14T11:55:35.534Z",
-      "completed": true
+      "description": "KOPLA",
+      "spentMinutes": 120
     },
     {
       "id": "1776195831396-3oi9wmu",
       "issueUrl": "https://git.ders.cz/simplifyworks/modules/eoc/-/issues/2859",
-      "description": "strava",
-      "spentMinutes": 180,
+      "completed": true,
       "createdAt": "2026-04-14T19:43:51.396Z",
-      "completed": true
+      "description": "strava",
+      "spentMinutes": 180
     },
     {
       "id": "1776235254831-8omf9ij",
       "issueUrl": "https://git.ders.cz/firma/prj/schuzky-porady-akce/-/issues/46",
-      "description": "sso prihlášení",
-      "spentMinutes": 60,
+      "completed": true,
       "createdAt": "2026-04-15T06:40:54.831Z",
-      "completed": true
+      "description": "sso prihlášení",
+      "spentMinutes": 60
     },
     {
       "id": "1776236047930-bvrt0q9",
       "issueUrl": "https://git.ders.cz/simplifyworks/modules/eoc/-/issues/2875#note_923305",
-      "description": "return XML Olex",
-      "spentMinutes": 240,
+      "completed": true,
       "createdAt": "2026-04-15T06:54:07.930Z",
-      "completed": true
+      "description": "return XML Olex",
+      "spentMinutes": 240
     },
     {
       "id": "1776255234621-v9hagq5",
       "issueUrl": "https://git.ders.cz/simplifyworks/modules/eoc/-/issues/2859",
-      "description": "strava return",
-      "spentMinutes": 60,
+      "completed": true,
       "createdAt": "2026-04-15T12:13:54.621Z",
-      "completed": true
+      "description": "strava return",
+      "spentMinutes": 60
     },
     {
       "id": "1776288615203-qnnn4cx",
       "issueUrl": "https://git.ders.cz/simplifyworks/apps/jcu-eoc/-/issues/223",
-      "description": "chyba KOPLA Zaplaceno",
-      "spentMinutes": 120,
+      "completed": true,
       "createdAt": "2026-04-15T21:30:15.203Z",
-      "completed": true
+      "description": "chyba KOPLA Zaplaceno",
+      "spentMinutes": 120
     },
     {
       "id": "1776321230771-m5t67j6",
       "issueUrl": "https://git.ders.cz/firma/prj/schuzky-porady-akce/-/issues/46",
-      "description": "stoják",
-      "spentMinutes": 30,
+      "completed": true,
       "createdAt": "2026-04-16T06:33:50.771Z",
-      "completed": false
+      "description": "stoják",
+      "spentMinutes": 30
     },
     {
       "id": "1776328203180-qjuz464",
       "issueUrl": "https://git.ders.cz/firma/prj/schuzky-porady-akce/-/issues/46",
-      "description": "konzultace export",
-      "spentMinutes": 1,
+      "completed": true,
       "createdAt": "2026-04-16T08:30:03.180Z",
-      "completed": false
+      "description": "konzultace export",
+      "spentMinutes": 30
     },
     {
       "id": "1776333491621-nmnn64t",
       "issueUrl": "https://git.ders.cz/simplifyworks/apps/ivs/-/issues/91",
-      "description": "obsazenost ubytování",
-      "spentMinutes": 30,
+      "completed": true,
       "createdAt": "2026-04-16T09:58:11.621Z",
-      "completed": true
+      "description": "obsazenost ubytování",
+      "spentMinutes": 30
     },
     {
       "id": "1776333710996-q6ebgyl",
       "issueUrl": "https://git.ders.cz/simplifyworks/modules/eoc/-/issues/2572",
-      "description": "platební metoda s verčou a vaškem",
-      "spentMinutes": 30,
+      "completed": true,
       "createdAt": "2026-04-16T10:01:50.996Z",
-      "completed": true
+      "description": "platební metoda s verčou a vaškem",
+      "spentMinutes": 30
     },
     {
       "id": "1776333722116-14odg8d",
       "issueUrl": "https://git.ders.cz/simplifyworks/modules/eoc/-/issues/2572",
-      "description": "platební metoda samostatně",
-      "spentMinutes": 60,
+      "completed": true,
       "createdAt": "2026-04-16T10:02:02.116Z",
-      "completed": true
+      "description": "platební metoda samostatně",
+      "spentMinutes": 60
     },
     {
       "id": "1776336863841-de7xfpn",
       "issueUrl": "https://git.ders.cz/simplifyworks/modules/eoc/-/issues/2893",
-      "description": "oprava chyby KOPLA brána paymentStatus",
-      "spentMinutes": 240,
+      "completed": true,
       "createdAt": "2026-04-16T10:54:23.841Z",
-      "completed": true
+      "description": "oprava chyby KOPLA brána paymentStatus",
+      "spentMinutes": 240
     },
     {
       "id": "1776350381857-7x4gw6h",
       "issueUrl": "https://git.ders.cz/simplifyworks/modules/eoc/-/issues/2866",
-      "description": "obsazenos s vaškem a verčou",
-      "spentMinutes": 30,
+      "completed": true,
       "createdAt": "2026-04-16T14:39:41.857Z",
-      "completed": true
+      "description": "obsazenos s vaškem a verčou",
+      "spentMinutes": 30
     },
     {
       "id": "1776406081764-0acwaur",
       "issueUrl": "https://git.ders.cz/simplifyworks/modules/eoc/-/issues/2892",
-      "description": "MR Matěj markdown",
-      "spentMinutes": 60,
+      "completed": true,
       "createdAt": "2026-04-17T06:08:01.764Z",
-      "completed": false
+      "description": "MR Matěj markdown",
+      "spentMinutes": 60
     },
     {
       "id": "1776410503479-77yl2ls",
       "issueUrl": "https://git.ders.cz/firma/prj/schuzky-porady-akce/-/issues/46#note_872716",
-      "description": "stoják",
-      "spentMinutes": 22,
+      "completed": true,
       "createdAt": "2026-04-17T07:21:43.479Z",
-      "completed": false
+      "description": "stoják",
+      "spentMinutes": 60
     },
     {
       "id": "1776411172357-t2orzmv",
       "issueUrl": "https://git.ders.cz/simplifyworks/modules/eoc/-/issues/2850",
-      "description": "MR Matěj DF drop",
-      "spentMinutes": 45,
+      "completed": true,
       "createdAt": "2026-04-17T07:32:52.357Z",
-      "completed": false
+      "description": "MR Matěj DF drop",
+      "spentMinutes": 45
     },
     {
       "id": "1776412447658-93t0uxd",
       "issueUrl": "https://git.ders.cz/simplifyworks/apps/jcu-eoc/-/issues/217",
-      "description": "IFIS moloch",
-      "spentMinutes": 90,
+      "completed": true,
       "createdAt": "2026-04-17T07:54:07.658Z",
-      "completed": false
+      "description": "IFIS moloch",
+      "spentMinutes": 120
     },
     {
       "id": "1776425656707-ava7l8r",
       "issueUrl": "https://git.ders.cz/simplifyworks/modules/eoc/-/issues/2893",
-      "description": "s holkama reseni KOPLA",
-      "spentMinutes": 60,
+      "completed": true,
       "createdAt": "2026-04-17T11:34:16.707Z",
-      "completed": false
+      "description": "s holkama reseni KOPLA",
+      "spentMinutes": 60
     },
     {
       "id": "1776666447068-3iizikq",
       "issueUrl": "https://git.ders.cz/simplifyworks/apps/jcu/-/issues/288",
-      "description": "zkoumám SML workflow",
-      "spentMinutes": 30,
+      "completed": true,
       "createdAt": "2026-04-20T06:27:27.068Z",
-      "completed": true
+      "description": "zkoumám SML workflow",
+      "spentMinutes": 30
     },
     {
       "id": "1776666982729-x17x962",
       "issueUrl": "https://git.ders.cz/firma/prj/schuzky-porady-akce/-/issues/46#note_872716",
-      "description": "ranní meet",
-      "spentMinutes": 45,
+      "completed": true,
       "createdAt": "2026-04-20T06:36:22.729Z",
-      "completed": true
+      "description": "ranní meet",
+      "spentMinutes": 45
     },
     {
       "id": "1776667292688-plpg3mb",
       "issueUrl": "https://git.ders.cz/simplifyworks/modules/eoc/-/issues/2751",
-      "description": "Eliška a vydání hotfixu z gitlabu",
-      "spentMinutes": 60,
+      "completed": true,
       "createdAt": "2026-04-20T06:41:32.688Z",
-      "completed": true
+      "description": "Eliška a vydání hotfixu z gitlabu",
+      "spentMinutes": 60
     },
     {
       "id": "1776678891858-s818o23",
       "issueUrl": "https://git.ders.cz/simplifyworks/apps/avcr-ssc-verso/-/issues/378",
-      "description": "tlačítka přeuložení",
-      "spentMinutes": 180,
+      "completed": true,
       "createdAt": "2026-04-20T09:54:51.858Z",
-      "completed": false
+      "description": "tlačítka přeuložení",
+      "spentMinutes": 180
     },
     {
       "id": "1776693613851-0aiqdlj",
       "issueUrl": "https://git.ders.cz/simplifyworks/modules/kopla/-/issues/220",
-      "description": "KOPLA ICO DIC",
-      "spentMinutes": 120,
+      "completed": true,
       "createdAt": "2026-04-20T14:00:13.851Z",
-      "completed": true
+      "description": "KOPLA ICO DIC",
+      "spentMinutes": 120
     },
     {
       "id": "1776699824716-pkmjogq",
       "issueUrl": "https://git.ders.cz/simplifyworks/modules/eoc/-/issues/2887",
-      "description": "Matěj MR",
-      "spentMinutes": 30,
+      "completed": true,
       "createdAt": "2026-04-20T15:43:44.716Z",
-      "completed": false
+      "description": "Matěj MR",
+      "spentMinutes": 30
     },
     {
       "id": "1776702092520-oom7p8f",
       "issueUrl": "https://git.ders.cz/simplifyworks/apps/jcu-eoc/-/issues/217",
-      "description": "dotazy ohledne KOPLA JCU",
-      "spentMinutes": 20,
+      "completed": true,
       "createdAt": "2026-04-20T16:21:32.520Z",
+      "description": "dotazy ohledne KOPLA JCU",
+      "spentMinutes": 20
+    },
+    {
+      "id": "1776760098740-zo1n5r9",
+      "issueUrl": "https://git.ders.cz/simplifyworks/modules/eoc/-/issues/2866",
+      "completed": true,
+      "createdAt": "2026-04-21T08:28:18.740Z",
+      "description": "otázky na web",
+      "spentMinutes": 360
+    },
+    {
+      "id": "1776807173716-dqzny43",
+      "issueUrl": "https://git.ders.cz/simplifyworks/modules/eoc/-/issues/2887",
+      "completed": true,
+      "createdAt": "2026-04-21T21:32:53.716Z",
+      "description": "mr",
+      "spentMinutes": 30
+    },
+    {
+      "id": "1776842597404-5e1gw7f",
+      "issueUrl": "https://git.ders.cz/simplifyworks/apps/jcu-eoc/-/issues/228",
+      "completed": true,
+      "createdAt": "2026-04-22T07:23:17.404Z",
+      "description": "platby za kurz jsou neuhrazené",
+      "spentMinutes": 30
+    },
+    {
+      "id": "1776847538730-podqayj",
+      "issueUrl": "https://git.ders.cz/simplifyworks/modules/eoc/-/issues/2887",
+      "completed": true,
+      "createdAt": "2026-04-22T08:45:38.730Z",
+      "description": "MR matěj",
+      "spentMinutes": 40
+    },
+    {
+      "id": "1776857836061-zj7mq1r",
+      "issueUrl": "https://git.ders.cz/simplifyworks/modules/eoc/-/issues/2910",
+      "completed": true,
+      "createdAt": "2026-04-22T11:37:16.061Z",
+      "description": "aktivní časové řady",
+      "spentMinutes": 180
+    },
+    {
+      "id": "1776860363575-p5mr41d",
+      "issueUrl": "https://git.ders.cz/simplifyworks/modules/eoc/-/issues/2905",
+      "completed": true,
+      "createdAt": "2026-04-22T12:19:23.575Z",
+      "description": "číselníky",
+      "spentMinutes": 180
+    },
+    {
+      "id": "1776872756690-uvdsh6g",
+      "issueUrl": "https://git.ders.cz/simplifyworks/modules/eoc/-/issues/2912",
+      "completed": true,
+      "createdAt": "2026-04-22T15:45:56.690Z",
+      "description": "103 položek, neděje se mi",
+      "spentMinutes": 15
+    },
+    {
+      "id": "1776926511582-2slaikd",
+      "issueUrl": "https://git.ders.cz/firma/prj/schuzky-porady-akce/-/issues/46",
+      "completed": true,
+      "createdAt": "2026-04-23T06:41:51.582Z",
+      "description": "ranní meet",
+      "spentMinutes": 20
+    },
+    {
+      "id": "1776927405501-b99r8cq",
+      "issueUrl": "https://git.ders.cz/simplifyworks/modules/eoc/-/issues/2893",
+      "completed": true,
+      "createdAt": "2026-04-23T06:56:45.501Z",
+      "description": "rovnání objednávek Zaplaceno s Míšou",
+      "spentMinutes": 30
+    },
+    {
+      "id": "1776928630041-yro7zw4",
+      "issueUrl": "https://git.ders.cz/simplifyworks/modules/eoc/-/issues/2914",
+      "completed": true,
+      "createdAt": "2026-04-23T07:17:10.041Z",
+      "description": "MR Matěj",
+      "spentMinutes": 15
+    },
+    {
+      "id": "1776935836987-jbxmqel",
+      "issueUrl": "https://git.ders.cz/simplifyworks/modules/eoc/-/issues/2906",
+      "completed": true,
+      "createdAt": "2026-04-23T09:17:16.987Z",
+      "description": "název programu",
+      "spentMinutes": 180
+    },
+    {
+      "id": "1776936874214-x15htga",
+      "issueUrl": "https://git.ders.cz/simplifyworks/modules/eoc/-/issues/2918",
+      "completed": true,
+      "createdAt": "2026-04-23T09:34:34.214Z",
+      "description": "nelze objednat více programů",
+      "spentMinutes": 90
+    },
+    {
+      "id": "1776954253512-umui7ak",
+      "issueUrl": "https://git.ders.cz/simplifyworks/apps/ders-eshop/-/issues/28",
+      "completed": true,
+      "createdAt": "2026-04-23T14:24:13.512Z",
+      "description": "Hanka straší",
+      "spentMinutes": 30
+    },
+    {
+      "id": "1776954392180-7hyfnym",
+      "issueUrl": "https://git.ders.cz/simplifyworks/modules/eoc/-/issues/2811",
+      "completed": true,
+      "createdAt": "2026-04-23T14:26:32.180Z",
+      "description": "chyba po odhlaseni",
+      "spentMinutes": 120
+    },
+    {
+      "id": "1777014174356-l9cmob7",
+      "issueUrl": "https://git.ders.cz/simplifyworks/modules/eoc/-/issues/2907",
+      "completed": true,
+      "createdAt": "2026-04-24T07:02:54.356Z",
+      "description": "MR Matěj eshop odkaz",
+      "spentMinutes": 30
+    },
+    {
+      "id": "1777014561099-zrtutwo",
+      "issueUrl": "https://git.ders.cz/simplifyworks/modules/eoc/-/issues/2917",
+      "completed": true,
+      "createdAt": "2026-04-24T07:09:21.099Z",
+      "description": "OOD after confirm",
+      "spentMinutes": 120
+    },
+    {
+      "id": "1777021938904-ci3i0ey",
+      "issueUrl": "https://git.ders.cz/simplifyworks/modules/eoc/-/issues/2916",
+      "completed": true,
+      "createdAt": "2026-04-24T09:12:18.904Z",
+      "description": "MR Ondra",
+      "spentMinutes": 15
+    },
+    {
+      "id": "1777022254199-g9jv4sp",
+      "issueUrl": "https://git.ders.cz/simplifyworks/modules/eoc/-/issues/2893#note_929251",
+      "completed": true,
+      "createdAt": "2026-04-24T09:17:34.199Z",
+      "description": "Míša JČU",
+      "spentMinutes": 30
+    },
+    {
+      "id": "1777051715548-1j0t8bx",
+      "issueUrl": "https://git.ders.cz/simplifyworks/modules/eoc/-/issues/2912",
+      "completed": true,
+      "createdAt": "2026-04-24T17:28:35.548Z",
+      "description": "psycho s URL a 146 záznamama",
+      "spentMinutes": 360
+    },
+    {
+      "id": "1777273182486-k9rpm43",
+      "issueUrl": "https://git.ders.cz/simplifyworks/modules/eoc/-/issues/2927",
+      "completed": true,
+      "createdAt": "2026-04-27T06:59:42.486Z",
+      "description": "menu",
+      "spentMinutes": 420
+    },
+    {
+      "id": "1777273213194-szx4jqv",
+      "issueUrl": "https://git.ders.cz/firma/prj/schuzky-porady-akce/-/issues/46#note_872716",
+      "completed": true,
+      "createdAt": "2026-04-27T07:00:13.194Z",
+      "description": "stojáky",
+      "spentMinutes": 40
+    },
+    {
+      "id": "1777361565708-75miw0b",
+      "issueUrl": "https://git.ders.cz/simplifyworks/apps/jcu-eoc/-/issues/228#note_930815",
+      "completed": true,
+      "createdAt": "2026-04-28T07:32:45.708Z",
+      "description": "míša rovnání 1",
+      "spentMinutes": 30
+    },
+    {
+      "id": "1777361596236-iisf26n",
+      "issueUrl": "https://git.ders.cz/simplifyworks/modules/eoc/-/issues/2893",
+      "completed": true,
+      "createdAt": "2026-04-28T07:33:16.236Z",
+      "description": "míša rovnání dva - update order state",
+      "spentMinutes": 60
+    },
+    {
+      "id": "1777361613235-s1dr4xw",
+      "issueUrl": "https://git.ders.cz/simplifyworks/apps/avcr-ssc-verso/-/issues/378",
+      "completed": true,
+      "createdAt": "2026-04-28T07:33:33.236Z",
+      "description": "SML - dimenze vs FS",
+      "spentMinutes": 120
+    },
+    {
+      "id": "1777376058760-f38ftak",
+      "issueUrl": "https://git.ders.cz/simplifyworks/modules/eoc/-/issues/2927",
+      "completed": true,
+      "createdAt": "2026-04-28T11:34:18.760Z",
+      "description": "ladění menu",
+      "spentMinutes": 90
+    },
+    {
+      "id": "1777376070961-6u6a28r",
+      "issueUrl": "https://git.ders.cz/simplifyworks/apps/jcu-eoc/-/issues/229#note_931021",
+      "completed": true,
+      "createdAt": "2026-04-28T11:34:30.961Z",
+      "description": "Moodle",
+      "spentMinutes": 90
+    },
+    {
+      "id": "1777385143335-864yst0",
+      "issueUrl": "https://jira.ders.cz/browse/FF-1994#comment-1087476",
+      "completed": true,
+      "createdAt": "2026-04-28T14:05:43.335Z",
+      "description": "rovnání FF příloh - minatury",
+      "spentMinutes": 90
+    },
+    {
+      "id": "1777446979002-fd6ik6k",
+      "issueUrl": "https://git.ders.cz/firma/prj/schuzky-porady-akce/-/issues/46#note_872716",
+      "completed": true,
+      "createdAt": "2026-04-29T07:16:19.002Z",
+      "description": "dev stand",
+      "spentMinutes": 20
+    },
+    {
+      "id": "1777447868471-kmhwbs6",
+      "issueUrl": "https://jira.ders.cz/browse/FF-1994#comment-1087577",
+      "completed": true,
+      "createdAt": "2026-04-29T07:31:08.471Z",
+      "description": "rovnání FF",
+      "spentMinutes": 20
+    },
+    {
+      "id": "1777481270079-tif7tcu",
+      "issueUrl": "https://git.ders.cz/simplifyworks/development/-/issues/9",
+      "completed": true,
+      "createdAt": "2026-04-29T16:47:50.079Z",
+      "description": "DEV SYNC",
+      "spentMinutes": 80
+    },
+    {
+      "id": "1777481554697-xn85hfw",
+      "issueUrl": "https://git.ders.cz/simplifyworks/modules/eoc/-/issues/2912",
+      "completed": false,
+      "createdAt": "2026-04-29T16:52:34.697Z",
+      "description": "ladění menu",
+      "spentMinutes": 180
+    },
+    {
+      "id": "1777483398946-j41kem3",
+      "issueUrl": "https://jira.ders.cz/browse/VSCHT-4531",
+      "description": "VSCHT platba zamitnuta",
+      "spentMinutes": 60,
+      "createdAt": "2026-04-29T17:23:18.946Z",
       "completed": true
     }
   ],
@@ -322,292 +616,439 @@
     {
       "id": "1776149020549-puaspt8",
       "text": "káva s mlékem plnotučným! 3x!",
-      "estimatedCalories": 120,
+      "createdAt": "2026-04-14T06:43:40.549Z",
       "estimateSource": "groq",
-      "createdAt": "2026-04-14T06:43:40.549Z"
+      "estimatedCalories": 120
     },
     {
       "id": "1776149209734-nmtgcwy",
       "text": "4 sušenka fibroki pome granate",
-      "estimatedCalories": 220,
+      "createdAt": "2026-04-14T06:46:49.734Z",
       "estimateSource": "groq",
-      "createdAt": "2026-04-14T06:46:49.734Z"
+      "estimatedCalories": 220
     },
     {
       "id": "1776152122683-uwacjfk",
       "text": "sklenice vody",
-      "estimatedCalories": 0,
+      "createdAt": "2026-04-14T07:35:22.683Z",
       "estimateSource": "groq",
-      "createdAt": "2026-04-14T07:35:22.683Z"
+      "estimatedCalories": 0
     },
     {
       "id": "1776185584233-yqv3qnb",
       "text": "kuře alá bažant s rýží v restauraci",
-      "estimatedCalories": 550,
+      "createdAt": "2026-04-14T16:53:04.233Z",
       "estimateSource": "groq",
-      "createdAt": "2026-04-14T16:53:04.233Z"
+      "estimatedCalories": 550
     },
     {
       "id": "1776185636763-t4rd139",
       "text": "200g kuřecího steaku s tzatziki salátem",
-      "estimatedCalories": 420,
+      "createdAt": "2026-04-14T16:53:56.763Z",
       "estimateSource": "groq",
-      "createdAt": "2026-04-14T16:53:56.763Z"
+      "estimatedCalories": 420
     },
     {
       "id": "1776266145131-1agbdmk",
       "text": "jakési dětské krokety z fritézy tedy nesmažené a k tomu trochu zeleniny a bramborová kaše",
-      "estimatedCalories": 420,
+      "createdAt": "2026-04-15T15:15:45.131Z",
       "estimateSource": "groq",
-      "createdAt": "2026-04-15T15:15:45.131Z"
+      "estimatedCalories": 420
     },
     {
       "id": "1776266274116-7rz49o2",
       "text": "k snídani jsem měl hrnek domácího kefíru a kávu s mlékem",
-      "estimatedCalories": 250,
+      "createdAt": "2026-04-15T15:17:54.116Z",
       "estimateSource": "groq",
-      "createdAt": "2026-04-15T15:17:54.116Z"
+      "estimatedCalories": 250
     },
     {
       "id": "1776268687175-8mccxae",
       "text": "po obědě káva s mlékem",
-      "estimatedCalories": 50,
+      "createdAt": "2026-04-15T15:58:07.175Z",
       "estimateSource": "groq",
-      "createdAt": "2026-04-15T15:58:07.175Z"
+      "estimatedCalories": 50
     },
     {
       "id": "1776268717239-9cimqrw",
       "text": "ke svačině banán a tvaroháček",
-      "estimatedCalories": 250,
+      "createdAt": "2026-04-15T15:58:37.239Z",
       "estimateSource": "groq",
-      "createdAt": "2026-04-15T15:58:37.239Z"
+      "estimatedCalories": 250
     },
     {
       "id": "1776269803798-42wdb27",
       "text": "kuřecí nudličky na hořčici s rýží, větší porce",
-      "estimatedCalories": 550,
+      "createdAt": "2026-04-15T16:16:43.798Z",
       "estimateSource": "groq",
-      "createdAt": "2026-04-15T16:16:43.798Z"
+      "estimatedCalories": 550
     },
     {
       "id": "1776278379934-xx6ir3o",
       "text": "napařované knedlíčky vepřové z čínské restaurace",
-      "estimatedCalories": 550,
+      "createdAt": "2026-04-15T18:39:39.934Z",
       "estimateSource": "groq",
-      "createdAt": "2026-04-15T18:39:39.934Z"
+      "estimatedCalories": 550
     },
     {
       "id": "1776321241422-rtulny5",
       "text": "káva s mlékem",
-      "estimatedCalories": 60,
+      "createdAt": "2026-04-16T06:34:01.422Z",
       "estimateSource": "groq",
-      "createdAt": "2026-04-16T06:34:01.422Z"
+      "estimatedCalories": 60
     },
     {
       "id": "1776333380984-npoihk3",
       "text": "smažená rýže s kuřecím masem větší porce",
-      "estimatedCalories": 550,
+      "createdAt": "2026-04-16T09:56:20.984Z",
       "estimateSource": "groq",
-      "createdAt": "2026-04-16T09:56:20.984Z"
+      "estimatedCalories": 550
     },
     {
       "id": "1776347924768-tp1wyvb",
       "text": "velká porce avokádo pomazánky + 2 plátky fibroki chleba",
-      "estimatedCalories": 540,
+      "createdAt": "2026-04-16T13:58:44.768Z",
       "estimateSource": "groq",
-      "createdAt": "2026-04-16T13:58:44.768Z"
+      "estimatedCalories": 540
     },
     {
       "id": "1776419448550-0rccbcg",
       "text": "hrnek domácího kefíru",
-      "estimatedCalories": 150,
+      "createdAt": "2026-04-17T09:50:48.550Z",
       "estimateSource": "groq",
-      "createdAt": "2026-04-17T09:50:48.550Z"
+      "estimatedCalories": 150
     },
     {
       "id": "1776419469500-i86grqg",
       "text": "4 sušenka fibroki cocoa",
-      "estimatedCalories": 220,
+      "createdAt": "2026-04-17T09:51:09.500Z",
       "estimateSource": "groq",
-      "createdAt": "2026-04-17T09:51:09.500Z"
+      "estimatedCalories": 220
     },
     {
       "id": "1776606724043-6yz45l3",
       "text": "polovina kebabu",
-      "estimatedCalories": 450,
+      "createdAt": "2026-04-19T13:52:04.043Z",
       "estimateSource": "groq",
-      "createdAt": "2026-04-19T13:52:04.043Z"
+      "estimatedCalories": 450
     },
     {
       "id": "1776670972144-dttvczk",
       "text": "domácí kefír půl hrnku",
-      "estimatedCalories": 50,
+      "createdAt": "2026-04-20T07:42:52.144Z",
       "estimateSource": "groq",
-      "createdAt": "2026-04-20T07:42:52.144Z"
+      "estimatedCalories": 50
     },
     {
       "id": "1776670980638-bv2ckl8",
       "text": "4 sušenka fibroki cocoa",
-      "estimatedCalories": 220,
+      "createdAt": "2026-04-20T07:43:00.638Z",
       "estimateSource": "groq",
-      "createdAt": "2026-04-20T07:43:00.638Z"
+      "estimatedCalories": 220
     },
     {
       "id": "1776670983613-gvfgsaw",
       "text": "mandarinka",
-      "estimatedCalories": 45,
+      "createdAt": "2026-04-20T07:43:03.613Z",
       "estimateSource": "groq",
-      "createdAt": "2026-04-20T07:43:03.613Z"
+      "estimatedCalories": 45
+    },
+    {
+      "id": "1776759978894-j3oj3pm",
+      "text": "Káva s mlékem - latte",
+      "createdAt": "2026-04-21T08:26:18.894Z",
+      "estimateSource": "groq",
+      "estimatedCalories": 60
+    },
+    {
+      "id": "1776759994810-ttz6inz",
+      "text": "Vaničku tvarohu",
+      "createdAt": "2026-04-21T08:26:34.811Z",
+      "estimateSource": "groq",
+      "estimatedCalories": 220
+    },
+    {
+      "id": "1776760003412-o4b6pkb",
+      "text": "4x fibroki sušenka",
+      "createdAt": "2026-04-21T08:26:43.412Z",
+      "estimateSource": "groq",
+      "estimatedCalories": 160
+    },
+    {
+      "id": "1776760028446-zjsieqr",
+      "text": "mandarinka",
+      "createdAt": "2026-04-21T08:27:08.446Z",
+      "estimateSource": "groq",
+      "estimatedCalories": 45
+    },
+    {
+      "id": "1776770858734-hpo48bi",
+      "text": "porce lososa se zeleninou a jeden fibroki plátek chleba",
+      "createdAt": "2026-04-21T11:27:38.734Z",
+      "estimateSource": "groq",
+      "estimatedCalories": 420
+    },
+    {
+      "id": "1776776531580-385b14r",
+      "text": "káva s mlékem",
+      "createdAt": "2026-04-21T13:02:11.580Z",
+      "estimateSource": "groq",
+      "estimatedCalories": 50
+    },
+    {
+      "id": "1776776536417-byayf9r",
+      "text": "dvě lentilky",
+      "createdAt": "2026-04-21T13:02:16.417Z",
+      "estimateSource": "groq",
+      "estimatedCalories": 120
+    },
+    {
+      "id": "1776851022026-nywxzyg",
+      "text": "včera jsem měl 24 kousků sushi maki",
+      "createdAt": "2026-04-22T09:43:42.026Z",
+      "estimateSource": "groq",
+      "estimatedCalories": 1200
+    },
+    {
+      "id": "1776851042540-cniv10n",
+      "text": "řízek a bramborový salát",
+      "createdAt": "2026-04-22T09:44:02.540Z",
+      "estimateSource": "groq",
+      "estimatedCalories": 420
     }
   ],
   "foodBurnEntries": [
     {
       "id": "1776418611651-1yx5fxh",
       "activity": "dragonboating, jízda na dračí lodi",
-      "durationMinutes": 60,
-      "estimatedCalories": 450,
+      "createdAt": "2026-04-17T09:36:51.651Z",
       "estimateSource": "groq",
-      "createdAt": "2026-04-17T09:36:51.651Z"
+      "durationMinutes": 60,
+      "estimatedCalories": 450
     }
   ],
   "spendEntries": [
     {
       "id": "1776263931285-dfqptv4",
       "amount": 350,
-      "description": "tesco",
-      "createdAt": "2026-04-15T14:38:51.285Z"
+      "createdAt": "2026-04-15T14:38:51.285Z",
+      "description": "tesco"
     },
     {
       "id": "1776263952398-7zqt81y",
       "amount": 450,
-      "description": "odsávačka pro Adélku",
-      "createdAt": "2026-04-15T14:39:12.398Z"
+      "createdAt": "2026-04-15T14:39:12.398Z",
+      "description": "odsávačka pro Adélku"
     },
     {
       "id": "1776264263028-dhlwq12",
       "amount": 47165,
-      "description": "Výplata",
       "isSalary": true,
-      "createdAt": "2026-04-15T14:44:23.028Z"
+      "createdAt": "2026-04-15T14:44:23.028Z",
+      "description": "Výplata"
     },
     {
       "id": "1776278398364-hmfd84e",
       "amount": 300,
-      "description": "večeře s Mirkou",
       "isSalary": false,
-      "createdAt": "2026-04-15T18:39:58.364Z"
+      "createdAt": "2026-04-15T18:39:58.364Z",
+      "description": "večeře s Mirkou"
     },
     {
       "id": "1776323728763-e7z1euo",
       "amount": 1253,
-      "description": "Cofeespot",
       "isSalary": false,
-      "createdAt": "2026-04-16T07:15:28.763Z"
+      "createdAt": "2026-04-16T07:15:28.763Z",
+      "description": "Cofeespot"
     },
     {
       "id": "1776406106747-1tnsyyf",
       "amount": 500,
-      "description": "benzin",
       "isSalary": false,
-      "createdAt": "2026-04-17T06:08:26.747Z"
+      "createdAt": "2026-04-17T06:08:26.747Z",
+      "description": "benzin"
     },
     {
       "id": "1776453837352-61lc1gf",
       "amount": 459,
-      "description": "internet",
       "isSalary": false,
-      "createdAt": "2026-04-17T19:23:57.351Z"
+      "createdAt": "2026-04-17T19:23:57.351Z",
+      "description": "internet"
     },
     {
       "id": "1776453849750-fcguckx",
       "amount": 2000,
-      "description": "elektrika",
       "isSalary": false,
-      "createdAt": "2026-04-17T19:24:09.750Z"
+      "createdAt": "2026-04-17T19:24:09.750Z",
+      "description": "elektrika"
     },
     {
       "id": "1776453859267-wqvo19q",
       "amount": 2500,
-      "description": "plyn",
       "isSalary": false,
-      "createdAt": "2026-04-17T19:24:19.267Z"
+      "createdAt": "2026-04-17T19:24:19.267Z",
+      "description": "plyn"
     },
     {
       "id": "1776453868325-m2wo2bh",
       "amount": 2000,
-      "description": "služby",
       "isSalary": false,
-      "createdAt": "2026-04-17T19:24:28.325Z"
+      "createdAt": "2026-04-17T19:24:28.325Z",
+      "description": "služby"
     },
     {
       "id": "1776453882327-6k82013",
       "amount": 1500,
-      "description": "vila Karolína",
       "isSalary": false,
-      "createdAt": "2026-04-17T19:24:42.327Z"
+      "createdAt": "2026-04-17T19:24:42.327Z",
+      "description": "vila Karolína"
     },
     {
       "id": "1776583025358-x6wbmfe",
       "amount": 270,
-      "description": "lázenské dopoledne s Mirkou",
       "isSalary": false,
-      "createdAt": "2026-04-19T07:17:05.358Z"
+      "createdAt": "2026-04-19T07:17:05.358Z",
+      "description": "lázenské dopoledne s Mirkou"
     },
     {
       "id": "1776583066116-204ytx8",
       "amount": 1000,
-      "description": "cash",
       "isSalary": false,
-      "createdAt": "2026-04-19T07:17:46.116Z"
+      "createdAt": "2026-04-19T07:17:46.116Z",
+      "description": "cash"
     },
     {
       "id": "1776583090219-e1zq5vf",
       "amount": 505,
-      "description": "kebab dvory",
       "isSalary": false,
-      "createdAt": "2026-04-19T07:18:10.219Z"
+      "createdAt": "2026-04-19T07:18:10.219Z",
+      "description": "kebab dvory"
     },
     {
       "id": "1776674072216-8a6zhxf",
       "amount": 600,
-      "description": "Miciinka papání od Klobásy",
       "isSalary": false,
-      "createdAt": "2026-04-20T08:34:32.216Z"
+      "createdAt": "2026-04-20T08:34:32.216Z",
+      "description": "Miciinka papání od Klobásy"
     },
     {
       "id": "1776687454377-pdq3d2k",
-      "amount": 1,
-      "description": "nákup Penny",
+      "amount": 228,
       "isSalary": false,
-      "createdAt": "2026-04-20T12:17:34.376Z"
+      "createdAt": "2026-04-20T12:17:34.376Z",
+      "description": "nákup Penny"
+    },
+    {
+      "id": "1776770498880-9vuhhgy",
+      "amount": 300,
+      "isSalary": false,
+      "createdAt": "2026-04-21T11:21:38.880Z",
+      "description": "Kadernice"
+    },
+    {
+      "id": "1776809523366-f1s4efe",
+      "amount": 800,
+      "isSalary": false,
+      "createdAt": "2026-04-21T22:12:03.366Z",
+      "description": "Sushi"
+    },
+    {
+      "id": "1776868291591-wlr1yj6",
+      "amount": 250,
+      "isSalary": false,
+      "createdAt": "2026-04-22T14:31:31.591Z",
+      "description": "Zmrzka Osek"
+    },
+    {
+      "id": "1777013978141-092ganb",
+      "amount": 532,
+      "isSalary": false,
+      "createdAt": "2026-04-24T06:59:38.141Z",
+      "description": "CURSOR, AI POWERED IDE"
+    },
+    {
+      "id": "1777023612433-28kxfvo",
+      "amount": 1170,
+      "isSalary": false,
+      "createdAt": "2026-04-24T09:40:12.433Z",
+      "description": "SBD vyúčtování"
+    },
+    {
+      "id": "1777051748020-zroqcdz",
+      "amount": 6500,
+      "isSalary": false,
+      "createdAt": "2026-04-24T17:29:08.020Z",
+      "description": "autoservis (kuft + vyměna olej, filtry,...)"
+    },
+    {
+      "id": "1777270171495-wnwhz8z",
+      "amount": 500,
+      "isSalary": false,
+      "createdAt": "2026-04-27T06:09:31.495Z",
+      "description": "cash"
+    },
+    {
+      "id": "1777373652697-dqoybbv",
+      "amount": 250,
+      "isSalary": false,
+      "createdAt": "2026-04-28T10:54:12.697Z",
+      "description": "oběd šalanda"
+    },
+    {
+      "id": "1777448215454-u4h8cnk",
+      "amount": 418,
+      "isSalary": false,
+      "createdAt": "2026-04-29T07:36:55.454Z",
+      "description": "večeře domů - čína"
+    },
+    {
+      "id": "1777448236462-6ce78e6",
+      "amount": 200,
+      "isSalary": false,
+      "createdAt": "2026-04-29T07:37:16.462Z",
+      "description": "lio nano 200"
+    },
+    {
+      "id": "1777448267078-jh83tud",
+      "amount": 250,
+      "isSalary": false,
+      "createdAt": "2026-04-29T07:37:47.078Z",
+      "description": "nákup"
+    },
+    {
+      "id": "1777482627799-l6cdf4h",
+      "amount": 700,
+      "isSalary": false,
+      "createdAt": "2026-04-29T17:10:27.799Z",
+      "description": "alza nákup"
     }
   ],
   "passwordEntries": [
     {
       "id": "1776604755306-i9fevgl",
-      "title": "kolodev",
-      "username": "sify_admin",
-      "password": "aHZA7wS76tfA",
       "url": "https://new-kolodev.ders.cz/simplifyworks/dashboard",
       "notes": "",
+      "title": "kolodev",
+      "password": "aHZA7wS76tfA",
+      "username": "sify_admin",
       "createdAt": "2026-04-19T13:19:15.306Z"
     },
     {
       "id": "1776604764386-5wukeag",
-      "title": "amko",
-      "username": "ro",
-      "password": "8DEfss87fsDF87",
       "url": "",
       "notes": "",
+      "title": "amko",
+      "password": "8DEfss87fsDF87",
+      "username": "ro",
       "createdAt": "2026-04-19T13:19:24.386Z"
     },
     {
       "id": "1776704344663-wo5zute",
-      "title": "Supabase",
-      "username": "github",
-      "password": "jKJSD654Sdas54",
       "url": "https://supabase.com/dashboard/project/jznyaeudxhkrzwzrzzyh",
       "notes": "",
+      "title": "Supabase",
+      "password": "jKJSD654Sdas54",
+      "username": "github",
       "createdAt": "2026-04-20T16:59:04.663Z"
     }
   ],

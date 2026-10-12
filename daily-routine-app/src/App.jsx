@@ -32,6 +32,8 @@ export default class App extends Component {
       relaxAmbientOn: false,
       relaxSoundOn: false,
       relaxSoundError: '',
+      backupDownloading: false,
+      backupError: '',
     };
     this.saveTimer = null;
     this.persistInFlight = false;
@@ -502,6 +504,46 @@ export default class App extends Component {
     );
   };
 
+  buildBackupFilename = () => {
+    const d = new Date();
+    const pad = (n) => String(n).padStart(2, '0');
+    return (
+      `daily-routine-backup-` +
+      `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}-` +
+      `${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}.json`
+    );
+  };
+
+  downloadDataBackup = async () => {
+    const { persistence, backupDownloading } = this.state;
+    if (persistence === 'none' || backupDownloading) return;
+
+    this.setState({ backupDownloading: true, backupError: '' });
+    try {
+      const response = await fetch('/api/app-data');
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const payload = await response.json();
+      const { persistence: _persistence, ...data } = payload || {};
+      const blob = new Blob([JSON.stringify(data, null, 2)], {
+        type: 'application/json',
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = this.buildBackupFilename();
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      this.setState({ backupDownloading: false, backupError: '' });
+    } catch {
+      this.setState({
+        backupDownloading: false,
+        backupError: 'Zálohu se nepodařilo stáhnout.',
+      });
+    }
+  };
+
   renderMain(page) {
     const {
       todoItems,
@@ -626,8 +668,17 @@ export default class App extends Component {
   }
 
   render() {
-    const { page, theme, storageLoaded, persistence, lastServerUpdatedAt, lastSyncedAt, syncStatus } =
-      this.state;
+    const {
+      page,
+      theme,
+      storageLoaded,
+      persistence,
+      lastServerUpdatedAt,
+      lastSyncedAt,
+      syncStatus,
+      backupDownloading,
+      backupError,
+    } = this.state;
     const syncStatusLabel =
       syncStatus === 'saving'
         ? 'ukladam'
@@ -664,7 +715,16 @@ export default class App extends Component {
               <div>
                 Posledni sync klienta: {this.formatDateTime(lastSyncedAt)} ({syncStatusLabel})
               </div>
+              {backupError ? <div className="app-header-backup-error">{backupError}</div> : null}
             </div>
+            <button
+              type="button"
+              className="backup-btn"
+              onClick={this.downloadDataBackup}
+              disabled={persistence === 'none' || backupDownloading}
+            >
+              {backupDownloading ? 'Stahuji…' : 'Záloha dat'}
+            </button>
             <button
               type="button"
               className="theme-toggle-btn"

@@ -564,9 +564,6 @@ export default class App extends Component {
       return (
         <DaylogPage
           items={daylogItems}
-          spendItems={spendEntries}
-          hourlyRate={daylogHourlyRate}
-          onHourlyRateChange={this.handleDaylogHourlyRateChange}
           onItemsChange={this.handleDaylogItemsChange}
         />
       );
@@ -646,9 +643,7 @@ export default class App extends Component {
         onTodoItemsChange={this.handleTodoItemsChange}
         daylogItems={daylogItems}
         spendEntries={spendEntries}
-        daylogHourlyRate={daylogHourlyRate}
         onDaylogItemsChange={this.handleDaylogItemsChange}
-        onDaylogHourlyRateChange={this.handleDaylogHourlyRateChange}
         foodEntries={foodEntries}
         foodBurnEntries={foodBurnEntries}
         calorieGoal={calorieGoal}

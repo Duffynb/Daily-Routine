@@ -10,9 +10,7 @@ export default class LifeManagerPage extends Component {
       todoItems,
       onTodoItemsChange,
       daylogItems,
-      daylogHourlyRate,
       onDaylogItemsChange,
-      onDaylogHourlyRateChange,
       foodEntries,
       foodBurnEntries,
       calorieGoal,
@@ -34,9 +32,6 @@ export default class LifeManagerPage extends Component {
           <section className="life-tile">
             <DaylogPage
               items={daylogItems}
-              spendItems={spendEntries}
-              hourlyRate={daylogHourlyRate}
-              onHourlyRateChange={onDaylogHourlyRateChange}
               onItemsChange={onDaylogItemsChange}
             />
           </section>

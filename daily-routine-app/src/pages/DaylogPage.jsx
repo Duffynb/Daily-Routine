@@ -133,15 +133,10 @@ function sumSpentMinutes(dayItems) {
 }
 
 const DAYLOG_DAILY_LIMIT_MINUTES = 8 * 60;
-const WORKDAY_START_HOUR = 8;
-const WORKDAY_END_HOUR = 16;
-const DEFAULT_HOURLY_RATE = 300;
 
-function clampProgressPercent(totalMinutes) {
-  return Math.max(
-    0,
-    Math.min(100, (Number(totalMinutes) / DAYLOG_DAILY_LIMIT_MINUTES) * 100)
-  );
+function clampProgressPercent(totalMinutes, limitMinutes = DAYLOG_DAILY_LIMIT_MINUTES) {
+  const limit = Math.max(1, Number(limitMinutes) || DAYLOG_DAILY_LIMIT_MINUTES);
+  return Math.max(0, Math.min(100, (Number(totalMinutes) / limit) * 100));
 }
 
 function isWeekend(date) {
@@ -149,50 +144,48 @@ function isWeekend(date) {
   return day === 0 || day === 6;
 }
 
-/** Pracovní den pro výdělek: ne víkend, ne pevný státní svátek (stejná sada jako kalendář). */
-function isEarningsCountingDay(date = new Date()) {
+/** Pracovní den: ne víkend, ne pevný státní svátek (stejná sada jako kalendář). */
+function isWorkingDay(date = new Date()) {
   if (isWeekend(date)) return false;
   if (isCzechFixedHoliday(date)) return false;
   return true;
 }
 
-function earnedHoursToday(now = new Date()) {
-  if (!isEarningsCountingDay(now)) return 0;
-  const currentHour = now.getHours();
-  const currentMinute = now.getMinutes();
-  const hourWithMinutes = currentHour + currentMinute / 60;
-  const fullHours = Math.floor(hourWithMinutes) - WORKDAY_START_HOUR;
-  return Math.max(0, Math.min(WORKDAY_END_HOUR - WORKDAY_START_HOUR, fullHours));
+/** Počet pracovních dnů od 1. dne měsíce do dneška včetně. */
+function countWorkingDaysThrough(now = new Date()) {
+  const year = now.getFullYear();
+  const month = now.getMonth();
+  const lastDay = now.getDate();
+  let count = 0;
+  for (let day = 1; day <= lastDay; day += 1) {
+    const date = new Date(year, month, day);
+    if (isWorkingDay(date)) count += 1;
+  }
+  return count;
 }
 
-function earningsPhaseClass(now = new Date()) {
-  if (!isEarningsCountingDay(now)) return 'daylog-earnings-box--off';
-  const hour = now.getHours();
-  if (hour < WORKDAY_START_HOUR) return 'daylog-earnings-box--before';
-  if (hour >= WORKDAY_END_HOUR) return 'daylog-earnings-box--done';
-  return 'daylog-earnings-box--active';
-}
-
-function formatMoneyCzk(value) {
-  return new Intl.NumberFormat('cs-CZ', {
-    style: 'currency',
-    currency: 'CZK',
-    maximumFractionDigits: 0,
-  }).format(Math.max(0, Number(value) || 0));
-}
-
-function sumTodaySpent(spendItems, now = new Date()) {
-  if (!Array.isArray(spendItems)) return 0;
-  const todayStart = startOfLocalDay(now);
-  return spendItems.reduce((acc, item) => {
+function sumMonthSpentMinutes(items, now = new Date()) {
+  const year = now.getFullYear();
+  const month = now.getMonth();
+  return (Array.isArray(items) ? items : []).reduce((acc, item) => {
+    // Monthly summary counts only confirmed (checked/green) rows.
+    if (!item?.completed) return acc;
     const createdAt = new Date(item?.createdAt);
     if (Number.isNaN(createdAt.getTime())) return acc;
-    if (startOfLocalDay(createdAt) !== todayStart) return acc;
-    if (item?.isSalary) return acc;
-    const amount = Number(item?.amount);
-    if (!Number.isFinite(amount) || amount <= 0) return acc;
-    return acc + amount;
+    if (createdAt.getFullYear() !== year || createdAt.getMonth() !== month) return acc;
+    return acc + (item.spentMinutes != null ? item.spentMinutes : 0);
   }, 0);
+}
+
+function monthProgressColorClass(actualMinutes, expectedMinutes) {
+  const expected = Math.max(0, Number(expectedMinutes) || 0);
+  const actual = Math.max(0, Number(actualMinutes) || 0);
+  if (expected <= 0) return actual > 0 ? 'progress-green' : 'progress-gray';
+  const ratio = actual / expected;
+  if (ratio >= 1) return 'progress-green';
+  if (ratio >= 0.875) return 'progress-yellow';
+  if (ratio >= 0.75) return 'progress-orange';
+  return 'progress-red';
 }
 
 function progressColorClass(totalMinutes) {
@@ -294,16 +287,8 @@ export default class DaylogPage extends Component {
       editError: '',
       calendarOpen: false,
       calendarOffset: 0,
-      hourlyRateDraft: String(
-        Number.isFinite(Number(this.props.hourlyRate))
-          ? Math.max(0, Math.floor(Number(this.props.hourlyRate)))
-          : DEFAULT_HOURLY_RATE
-      ),
-      hourlyRateError: '',
-      nowTick: Date.now(),
     };
     this.editUrlRef = React.createRef();
-    this.clockTimer = null;
   }
 
   get items() {
@@ -311,40 +296,13 @@ export default class DaylogPage extends Component {
     return Array.isArray(items) ? items : [];
   }
 
-  get spendItems() {
-    const { spendItems } = this.props;
-    return Array.isArray(spendItems) ? spendItems : [];
-  }
-
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(_prevProps, prevState) {
     if (
       this.state.editingId &&
       this.state.editingId !== prevState.editingId
     ) {
       const el = this.editUrlRef.current;
       if (el) el.focus();
-    }
-    if (prevProps.hourlyRate !== this.props.hourlyRate) {
-      const parsed = Number(this.props.hourlyRate);
-      const safeValue = Number.isFinite(parsed)
-        ? Math.max(0, Math.floor(parsed))
-        : DEFAULT_HOURLY_RATE;
-      if (String(safeValue) !== this.state.hourlyRateDraft) {
-        this.setState({ hourlyRateDraft: String(safeValue), hourlyRateError: '' });
-      }
-    }
-  }
-
-  componentDidMount() {
-    this.clockTimer = window.setInterval(() => {
-      this.setState({ nowTick: Date.now() });
-    }, 30000);
-  }
-
-  componentWillUnmount() {
-    if (this.clockTimer) {
-      window.clearInterval(this.clockTimer);
-      this.clockTimer = null;
     }
   }
 
@@ -367,32 +325,6 @@ export default class DaylogPage extends Component {
   handleTimeChange = (e) => {
     this.setState({ timeDraft: e.target.value });
     this.clearAddErrors();
-  };
-
-  handleHourlyRateChange = (e) => {
-    const raw = e.target.value;
-    this.setState({ hourlyRateDraft: raw, hourlyRateError: '' });
-  };
-
-  parsedHourlyRate() {
-    const n = Number(this.state.hourlyRateDraft);
-    if (!Number.isFinite(n) || n < 0) return null;
-    return Math.floor(n);
-  }
-
-  commitHourlyRate = () => {
-    const parsed = this.parsedHourlyRate();
-    if (parsed === null) {
-      this.setState({
-        hourlyRateError: 'Zadejte prosím platnou nezápornou sazbu.',
-      });
-      return;
-    }
-    this.setState({ hourlyRateDraft: String(parsed), hourlyRateError: '' });
-    const { onHourlyRateChange } = this.props;
-    if (typeof onHourlyRateChange === 'function') {
-      onHourlyRateChange(parsed);
-    }
   };
 
   addItem = () => {
@@ -741,18 +673,27 @@ export default class DaylogPage extends Component {
       editingId,
       calendarOpen,
       calendarOffset,
-      hourlyRateDraft,
-      hourlyRateError,
-      nowTick,
     } = this.state;
     const items = this.items;
-    const now = new Date(nowTick);
-    const hourlyRate = this.parsedHourlyRate();
-    const earningsDay = isEarningsCountingDay(now);
-    const earnedHours = earnedHoursToday(now);
-    const earnedToday = (hourlyRate || 0) * earnedHours;
-    const spentToday = sumTodaySpent(this.spendItems, now);
-    const earningsBoxClass = earningsPhaseClass(now);
+    const now = new Date();
+    const workingDaysSoFar = countWorkingDaysThrough(now);
+    const expectedMonthMinutes = workingDaysSoFar * DAYLOG_DAILY_LIMIT_MINUTES;
+    const actualMonthMinutes = sumMonthSpentMinutes(items, now);
+    const monthDiffMinutes = actualMonthMinutes - expectedMonthMinutes;
+    const monthPercent =
+      expectedMonthMinutes > 0
+        ? Math.round((actualMonthMinutes / expectedMonthMinutes) * 100)
+        : actualMonthMinutes > 0
+          ? 100
+          : 0;
+    const monthProgressClass = monthProgressColorClass(
+      actualMonthMinutes,
+      expectedMonthMinutes
+    );
+    const monthTitleLabel = now.toLocaleDateString('cs-CZ', {
+      month: 'long',
+      year: 'numeric',
+    });
     const { map, keys, todayStart, yesterdayStart } = groupItemsByDay(items);
     const calendarBaseDate = new Date();
     calendarBaseDate.setMonth(calendarBaseDate.getMonth() + calendarOffset);
@@ -773,53 +714,37 @@ export default class DaylogPage extends Component {
             Kalendář měsíce
           </button>
         </div>
-        <div className={`daylog-earnings-box ${earningsBoxClass}`}>
-          <div className="daylog-earnings-main">
-            <div className="daylog-earnings-topline">
-              <div className="daylog-earnings-label">Kolik jsem si dnes vydělal</div>
-              <div className="daylog-earnings-spent">
-                Dnes utraceno: {formatMoneyCzk(spentToday)}
-              </div>
-            </div>
-            <div className="daylog-earnings-value">{formatMoneyCzk(earnedToday)}</div>
-            <div className="daylog-earnings-meta">
-              {earningsDay ? (
-                <>
-                  Zaplaceno: {earnedHours} h z {WORKDAY_END_HOUR - WORKDAY_START_HOUR}{' '}
-                  h (počítá se po hodinách mezi 8:00–16:00)
-                </>
-              ) : (
-                <>
-                  Víkend nebo státní svátek — výdělek se dnes nepočítá (pracovní dny
-                  8:00–16:00).
-                </>
-              )}
-            </div>
+        <div className={`daylog-month-box daylog-month-box--${monthProgressClass}`}>
+          <div className="daylog-month-label">
+            Zapsaná pracnost za celý měsíc ({monthTitleLabel})
           </div>
-          <div className="daylog-earnings-rate-wrap">
-            <label className="daylog-earnings-rate-label" htmlFor="daylog-hourly-rate">
-              Hodinová sazba (Kč)
-            </label>
-            <input
-              id="daylog-hourly-rate"
-              type="number"
-              min="0"
-              step="1"
-              className="daylog-earnings-rate-input"
-              value={hourlyRateDraft}
-              onChange={this.handleHourlyRateChange}
-              onBlur={this.commitHourlyRate}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  e.preventDefault();
-                  this.commitHourlyRate();
-                }
+          <div className="daylog-month-value">
+            {formatMinutes(actualMonthMinutes)}
+            <span className="daylog-month-expected">
+              {' '}
+              / {formatMinutes(expectedMonthMinutes)} ({monthPercent} %)
+            </span>
+          </div>
+          <div className="daylog-month-meta">
+            Jen odškrtnuté řádky · pracovní dny zatím: {workingDaysSoFar} · cíl{' '}
+            {formatMinutes(DAYLOG_DAILY_LIMIT_MINUTES)}
+            /den ·{' '}
+            {monthDiffMinutes === 0
+              ? 'v cíli'
+              : monthDiffMinutes > 0
+                ? `napřed o ${formatMinutes(monthDiffMinutes)}`
+                : `chybí ${formatMinutes(Math.abs(monthDiffMinutes))}`}
+          </div>
+          <div className="daylog-progress-track daylog-month-progress" aria-hidden>
+            <div
+              className={`daylog-progress-fill ${monthProgressClass}`}
+              style={{
+                width: `${clampProgressPercent(
+                  actualMonthMinutes,
+                  Math.max(expectedMonthMinutes, 1)
+                )}%`,
               }}
-              aria-label="Hodinová sazba v korunách"
             />
-            {hourlyRateError ? (
-              <span className="daylog-earnings-rate-error">{hourlyRateError}</span>
-            ) : null}
           </div>
         </div>
         <div className="toolbar">

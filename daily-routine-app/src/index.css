@@ -765,12 +765,7 @@ body::after {
   margin-bottom: 0.4rem;
 }
 
-.daylog-earnings-box {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.8rem;
-  flex-wrap: wrap;
+.daylog-month-box {
   margin: 0.1rem 0 0.95rem;
   padding: 0.7rem 0.78rem;
   border: 1px solid #bfdbfe;
@@ -778,103 +773,74 @@ body::after {
   background: linear-gradient(135deg, #eff6ff, #f8fbff);
 }
 
-.daylog-earnings-box--before {
-  border-color: #cbd5e1;
-  background: linear-gradient(135deg, #f8fafc, #f1f5f9);
-}
-
-.daylog-earnings-box--active {
-  border-color: #bfdbfe;
-  background: linear-gradient(135deg, #eff6ff, #f8fbff);
-}
-
-.daylog-earnings-box--done {
+.daylog-month-box--progress-green {
   border-color: #86efac;
   background: linear-gradient(135deg, #ecfdf5, #f0fdf4);
 }
 
-.daylog-earnings-box--off {
-  border-color: #f59e0b;
-  background: linear-gradient(135deg, #fffbeb, #fef3c7);
+.daylog-month-box--progress-yellow {
+  border-color: #facc15;
+  background: linear-gradient(135deg, #fefce8, #fef9c3);
 }
 
-.daylog-earnings-box--off .daylog-earnings-value {
-  color: #92400e;
+.daylog-month-box--progress-orange {
+  border-color: #fb923c;
+  background: linear-gradient(135deg, #fff7ed, #ffedd5);
 }
 
-.daylog-earnings-main {
-  min-width: 220px;
+.daylog-month-box--progress-red {
+  border-color: #f87171;
+  background: linear-gradient(135deg, #fef2f2, #fee2e2);
 }
 
-.daylog-earnings-topline {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 0.65rem;
-  flex-wrap: wrap;
+.daylog-month-box--progress-gray {
+  border-color: #cbd5e1;
+  background: linear-gradient(135deg, #f8fafc, #f1f5f9);
 }
 
-.daylog-earnings-label {
+.daylog-month-label {
   font-size: 0.78rem;
   color: #334155;
 }
 
-.daylog-earnings-spent {
-  font-size: 0.74rem;
-  color: #64748b;
-  white-space: nowrap;
-}
-
-.daylog-earnings-topline + .daylog-earnings-value {
+.daylog-month-value {
   margin-top: 0.14rem;
-}
-
-.daylog-earnings-value {
   font-size: 1.15rem;
   font-weight: 800;
   color: #1e3a8a;
   line-height: 1.2;
 }
 
-.daylog-earnings-box--before .daylog-earnings-value {
-  color: #334155;
-}
-
-.daylog-earnings-box--done .daylog-earnings-value {
+.daylog-month-box--progress-green .daylog-month-value {
   color: #166534;
 }
 
-.daylog-earnings-meta {
+.daylog-month-box--progress-yellow .daylog-month-value {
+  color: #854d0e;
+}
+
+.daylog-month-box--progress-orange .daylog-month-value {
+  color: #9a3412;
+}
+
+.daylog-month-box--progress-red .daylog-month-value {
+  color: #991b1b;
+}
+
+.daylog-month-expected {
+  font-size: 0.95rem;
+  font-weight: 650;
+  color: #64748b;
+}
+
+.daylog-month-meta {
   margin-top: 0.14rem;
   font-size: 0.75rem;
   color: #475569;
 }
 
-.daylog-earnings-rate-wrap {
-  display: flex;
-  flex-direction: column;
-  gap: 0.22rem;
-  min-width: 168px;
-}
-
-.daylog-earnings-rate-label {
-  font-size: 0.74rem;
-  color: #475569;
-}
-
-.daylog-earnings-rate-input {
-  width: 100%;
-  max-width: 170px;
-  border: 1px solid #93c5fd;
-  border-radius: 7px;
-  padding: 0.34rem 0.45rem;
-  font: inherit;
-  font-size: 0.88rem;
-}
-
-.daylog-earnings-rate-error {
-  font-size: 0.74rem;
-  color: #b91c1c;
+.daylog-month-progress {
+  margin-top: 0.55rem;
 }
 
 .daylog-calendar-modal-backdrop {
@@ -1795,18 +1761,8 @@ a.daylog-issue-link:hover {
     width: 100%;
   }
 
-  .daylog-earnings-box {
+  .daylog-month-box {
     padding: 0.65rem;
-  }
-
-  .daylog-earnings-main,
-  .daylog-earnings-rate-wrap {
-    width: 100%;
-    min-width: 0;
-  }
-
-  .daylog-earnings-rate-input {
-    max-width: none;
   }
 
   .list-row {

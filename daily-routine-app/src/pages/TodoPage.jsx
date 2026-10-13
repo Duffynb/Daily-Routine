@@ -98,8 +98,8 @@ export default class TodoPage extends Component {
     if (!text) return;
     const { onItemsChange } = this.props;
     const next = [
-      ...this.items,
       { id: nextId(), text, completed: false, dueAt: null },
+      ...this.items,
     ];
     onItemsChange(sortTodosActiveFirst(next));
     this.setState({ draft: '' });

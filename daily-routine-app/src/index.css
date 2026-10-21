@@ -1287,6 +1287,20 @@ a.daylog-issue-link:hover {
   flex: 0 0 auto;
 }
 
+.spend-import-btn {
+  flex: 0 0 auto;
+}
+
+.spend-import-input {
+  display: none;
+}
+
+.spend-import-info {
+  margin: -0.35rem 0 0.75rem;
+  font-size: 0.82rem;
+  color: #047857;
+}
+
 .spend-period {
   margin-top: 1rem;
 }
@@ -1445,6 +1459,11 @@ a.daylog-issue-link:hover {
 .spend-type-badge--salary {
   background: #dcfce7;
   color: #166534;
+}
+
+.spend-type-badge--import {
+  background: #e0e7ff;
+  color: #3730a3;
 }
 
 .life-manager-root {

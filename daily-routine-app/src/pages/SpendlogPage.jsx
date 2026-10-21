@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { importCsobCsvText } from '../utils/csobCsvImport.js';
 
 function nextId() {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
@@ -117,7 +118,11 @@ export default class SpendlogPage extends Component {
       editAmount: '',
       editDesc: '',
       editError: '',
+      importInfo: '',
+      importError: '',
+      importing: false,
     };
+    this.importInputRef = React.createRef();
   }
 
   get items() {
@@ -209,6 +214,41 @@ export default class SpendlogPage extends Component {
     });
   };
 
+  openImportDialog = () => {
+    if (this.state.importing) return;
+    const input = this.importInputRef.current;
+    if (input) input.click();
+  };
+
+  handleImportFile = async (e) => {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) return;
+
+    this.setState({ importing: true, importInfo: '', importError: '' });
+    try {
+      const text = await file.text();
+      const { nextItems, added, skipped, ignored } = importCsobCsvText(
+        text,
+        this.items
+      );
+      if (added > 0) {
+        this.props.onItemsChange(nextItems);
+      }
+      this.setState({
+        importing: false,
+        importError: '',
+        importInfo: `Přidáno ${added}, přeskočeno ${skipped} (už existuje), ignorováno ${ignored} (příchozí/neplatné).`,
+      });
+    } catch (err) {
+      this.setState({
+        importing: false,
+        importInfo: '',
+        importError: String(err?.message || err || 'Import CSV selhal.'),
+      });
+    }
+  };
+
   saveEdit = () => {
     const { editingId, editAmount, editDesc } = this.state;
     if (!editingId) return;
@@ -239,6 +279,9 @@ export default class SpendlogPage extends Component {
       editAmount,
       editDesc,
       editError,
+      importInfo,
+      importError,
+      importing,
     } = this.state;
     const items = this.items;
     const { periodMap, periodKeys } = groupSpendItems(items);
@@ -289,6 +332,23 @@ export default class SpendlogPage extends Component {
           <button type="button" className="btn btn-primary" onClick={this.addItem}>
             {needsSalaryNow ? 'Uložit výplatu' : 'Přidat výdaj'}
           </button>
+          <button
+            type="button"
+            className="btn spend-import-btn"
+            onClick={this.openImportDialog}
+            disabled={importing}
+          >
+            {importing ? 'Importuji…' : 'Importovat ČSOB CSV'}
+          </button>
+          <input
+            ref={this.importInputRef}
+            type="file"
+            accept=".csv,text/csv"
+            className="spend-import-input"
+            onChange={this.handleImportFile}
+            aria-hidden
+            tabIndex={-1}
+          />
         </div>
         {needsSalaryNow ? (
           <p className="spend-salary-hint">Nové období začíná výplatou (15. - 15.).</p>
@@ -298,6 +358,12 @@ export default class SpendlogPage extends Component {
             {formError}
           </p>
         ) : null}
+        {importError ? (
+          <p className="daylog-form-error" role="alert">
+            {importError}
+          </p>
+        ) : null}
+        {importInfo ? <p className="spend-import-info">{importInfo}</p> : null}
 
         {items.length === 0 ? (
           <p className="empty-hint">Zatím žádné záznamy. Začněte vložením výplaty.</p>
@@ -454,6 +520,14 @@ export default class SpendlogPage extends Component {
                                 {item.isSalary ? (
                                   <span className="spend-type-badge spend-type-badge--salary">
                                     Výplata
+                                  </span>
+                                ) : null}
+                                {item.bankTxId ? (
+                                  <span
+                                    className="spend-type-badge spend-type-badge--import"
+                                    title={`Import ČSOB: ${item.bankTxId}`}
+                                  >
+                                    import
                                   </span>
                                 ) : null}
                                 <button

@@ -449,7 +449,8 @@ body::after {
 }
 
 .toolbar input[type='text'],
-.toolbar input[type='number'] {
+.toolbar input[type='number'],
+.toolbar input[type='date'] {
   padding: 0.5rem 0.65rem;
   border: 1px solid #cbd5e1;
   border-radius: 6px;
@@ -471,6 +472,16 @@ body::after {
 
 .toolbar input.daylog-time-input {
   width: 7.5rem;
+  flex: 0 0 auto;
+}
+
+.toolbar input.daylog-date-input {
+  width: 150px;
+  flex: 0 0 auto;
+}
+
+.list-row.list-row--daylog-edit .inline-edit-input--date {
+  width: 150px;
   flex: 0 0 auto;
 }
 
@@ -1287,6 +1298,16 @@ a.daylog-issue-link:hover {
   flex: 0 0 auto;
 }
 
+.toolbar .spend-date-input {
+  width: 150px;
+  flex: 0 0 auto;
+}
+
+.spend-edit-date {
+  width: 150px;
+  flex: 0 0 auto;
+}
+
 .spend-import-btn {
   flex: 0 0 auto;
 }
@@ -1758,13 +1779,16 @@ a.daylog-issue-link:hover {
 
   .toolbar input[type='text'],
   .toolbar input[type='number'],
+  .toolbar input[type='date'],
   .btn {
     width: 100%;
   }
 
   .toolbar input.daylog-url-input,
   .toolbar input.daylog-time-input,
-  .toolbar .spend-amount-input {
+  .toolbar input.daylog-date-input,
+  .toolbar .spend-amount-input,
+  .toolbar .spend-date-input {
     width: 100%;
     max-width: none;
     min-width: 0;

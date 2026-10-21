@@ -107,16 +107,42 @@ function sortByCreatedAsc(a, b) {
   return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
 }
 
+function toDateInputValue(dateLike = new Date()) {
+  const d = new Date(dateLike);
+  if (Number.isNaN(d.getTime())) return '';
+  const pad = (n) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
+function dateInputToIso(dateStr) {
+  const m = String(dateStr || '').trim().match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!m) return null;
+  const year = Number(m[1]);
+  const month = Number(m[2]);
+  const day = Number(m[3]);
+  const d = new Date(year, month - 1, day, 12, 0, 0, 0);
+  if (
+    d.getFullYear() !== year ||
+    d.getMonth() !== month - 1 ||
+    d.getDate() !== day
+  ) {
+    return null;
+  }
+  return d.toISOString();
+}
+
 export default class SpendlogPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
       amountDraft: '',
       descDraft: '',
+      dateDraft: toDateInputValue(new Date()),
       formError: '',
       editingId: null,
       editAmount: '',
       editDesc: '',
+      editDate: '',
       editError: '',
       importInfo: '',
       importError: '',
@@ -140,17 +166,22 @@ export default class SpendlogPage extends Component {
   };
 
   addItem = () => {
-    const now = new Date();
-    const nowPeriodStart = payPeriodStart(now);
+    const createdAt = dateInputToIso(this.state.dateDraft);
     const amount = parseAmount(this.state.amountDraft);
     const rawDescription = this.state.descDraft.trim();
+
+    if (!createdAt) {
+      this.setState({ formError: 'Zadejte platné datum.' });
+      return;
+    }
 
     if (amount == null) {
       this.setState({ formError: 'Zadejte platnou částku.' });
       return;
     }
 
-    const needsSalary = !this.hasSalaryInPeriod(nowPeriodStart);
+    const periodStart = payPeriodStart(createdAt);
+    const needsSalary = !this.hasSalaryInPeriod(periodStart);
 
     if (!needsSalary && !rawDescription) {
       this.setState({ formError: 'Vyplňte popis výdaje.' });
@@ -162,7 +193,7 @@ export default class SpendlogPage extends Component {
       amount,
       description: needsSalary ? 'Výplata' : rawDescription,
       isSalary: needsSalary,
-      createdAt: now.toISOString(),
+      createdAt,
     };
 
     this.props.onItemsChange([...this.items, item]);
@@ -170,6 +201,7 @@ export default class SpendlogPage extends Component {
     this.setState({
       amountDraft: '',
       descDraft: '',
+      dateDraft: toDateInputValue(new Date()),
       formError: '',
     });
   };
@@ -201,6 +233,7 @@ export default class SpendlogPage extends Component {
       editingId: item.id,
       editAmount: String(item.amount ?? ''),
       editDesc: item.description ?? '',
+      editDate: toDateInputValue(item.createdAt),
       editError: '',
     });
   };
@@ -210,6 +243,7 @@ export default class SpendlogPage extends Component {
       editingId: null,
       editAmount: '',
       editDesc: '',
+      editDate: '',
       editError: '',
     });
   };
@@ -250,13 +284,18 @@ export default class SpendlogPage extends Component {
   };
 
   saveEdit = () => {
-    const { editingId, editAmount, editDesc } = this.state;
+    const { editingId, editAmount, editDesc, editDate } = this.state;
     if (!editingId) return;
     const current = this.items.find((i) => i.id === editingId);
     if (!current) return;
 
     const amount = parseAmount(editAmount);
+    const createdAt = dateInputToIso(editDate);
     const description = current.isSalary ? 'Výplata' : editDesc.trim();
+    if (!createdAt) {
+      this.setState({ editError: 'Zadejte platné datum.' });
+      return;
+    }
     if (amount == null || (!current.isSalary && !description)) {
       this.setState({ editError: 'Zadejte platnou částku i popis.' });
       return;
@@ -264,7 +303,7 @@ export default class SpendlogPage extends Component {
 
     this.props.onItemsChange(
       this.items.map((i) =>
-        i.id === editingId ? { ...i, amount, description } : i
+        i.id === editingId ? { ...i, amount, description, createdAt } : i
       )
     );
     this.cancelEdit();
@@ -274,10 +313,12 @@ export default class SpendlogPage extends Component {
     const {
       amountDraft,
       descDraft,
+      dateDraft,
       formError,
       editingId,
       editAmount,
       editDesc,
+      editDate,
       editError,
       importInfo,
       importError,
@@ -286,13 +327,24 @@ export default class SpendlogPage extends Component {
     const items = this.items;
     const { periodMap, periodKeys } = groupSpendItems(items);
     const todayStart = startOfLocalDay(new Date());
-    const nowPeriodStart = payPeriodStart(new Date());
-    const needsSalaryNow = !this.hasSalaryInPeriod(nowPeriodStart);
+    const draftIso = dateInputToIso(dateDraft) || new Date().toISOString();
+    const draftPeriodStart = payPeriodStart(draftIso);
+    const needsSalaryNow = !this.hasSalaryInPeriod(draftPeriodStart);
 
     return (
       <div className="panel">
         <h2>Spendlog</h2>
         <div className="toolbar">
+          <input
+            type="date"
+            className="spend-date-input"
+            value={dateDraft}
+            onChange={(e) => {
+              this.setState({ dateDraft: e.target.value });
+              this.clearFormError();
+            }}
+            aria-label="Datum výdaje"
+          />
           <input
             type="text"
             className="spend-amount-input"
@@ -433,6 +485,29 @@ export default class SpendlogPage extends Component {
                             {editingId === item.id ? (
                               <>
                                 <input
+                                  type="date"
+                                  className="inline-edit-input spend-edit-date"
+                                  value={editDate}
+                                  onChange={(e) =>
+                                    this.setState({
+                                      editDate: e.target.value,
+                                      editError: '',
+                                    })
+                                  }
+                                  onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                      e.preventDefault();
+                                      this.saveEdit();
+                                    }
+                                    if (e.key === 'Escape') {
+                                      e.preventDefault();
+                                      this.cancelEdit();
+                                    }
+                                  }}
+                                  aria-label="Upravit datum"
+                                  autoFocus
+                                />
+                                <input
                                   type="text"
                                   className="inline-edit-input spend-edit-amount"
                                   value={editAmount}
@@ -453,7 +528,6 @@ export default class SpendlogPage extends Component {
                                     }
                                   }}
                                   aria-label="Upravit částku"
-                                  autoFocus
                                 />
                                 {item.isSalary ? (
                                   <span className="spend-type-badge spend-type-badge--salary">

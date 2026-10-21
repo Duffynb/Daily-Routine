@@ -271,6 +271,32 @@ function stripLegacyIssueFields(item) {
   return rest;
 }
 
+function toDateInputValue(dateLike = new Date()) {
+  const d = new Date(dateLike);
+  if (Number.isNaN(d.getTime())) return '';
+  const pad = (n) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
+function dateInputToIso(dateStr) {
+  const m = String(dateStr || '')
+    .trim()
+    .match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!m) return null;
+  const year = Number(m[1]);
+  const month = Number(m[2]);
+  const day = Number(m[3]);
+  const d = new Date(year, month - 1, day, 12, 0, 0, 0);
+  if (
+    d.getFullYear() !== year ||
+    d.getMonth() !== month - 1 ||
+    d.getDate() !== day
+  ) {
+    return null;
+  }
+  return d.toISOString();
+}
+
 export default class DaylogPage extends Component {
   constructor(props) {
     super(props);
@@ -278,12 +304,15 @@ export default class DaylogPage extends Component {
       urlDraft: '',
       descDraft: '',
       timeDraft: '',
+      dateDraft: toDateInputValue(new Date()),
       timeError: '',
       linkError: '',
+      dateError: '',
       editingId: null,
       editUrl: '',
       editTime: '',
       editDesc: '',
+      editDate: '',
       editError: '',
       calendarOpen: false,
       calendarOffset: 0,
@@ -307,8 +336,8 @@ export default class DaylogPage extends Component {
   }
 
   clearAddErrors = () => {
-    if (this.state.timeError || this.state.linkError) {
-      this.setState({ timeError: '', linkError: '' });
+    if (this.state.timeError || this.state.linkError || this.state.dateError) {
+      this.setState({ timeError: '', linkError: '', dateError: '' });
     }
   };
 
@@ -327,12 +356,27 @@ export default class DaylogPage extends Component {
     this.clearAddErrors();
   };
 
+  handleDateChange = (e) => {
+    this.setState({ dateDraft: e.target.value });
+    this.clearAddErrors();
+  };
+
   addItem = () => {
     const urlRaw = this.state.urlDraft.trim();
     const description = this.state.descDraft.trim();
     const timeRaw = this.state.timeDraft.trim();
+    const createdAt = dateInputToIso(this.state.dateDraft);
 
     if (!urlRaw || !description) return;
+
+    if (!createdAt) {
+      this.setState({
+        dateError: 'Zadejte platné datum.',
+        timeError: '',
+        linkError: '',
+      });
+      return;
+    }
 
     const issueUrl = normalizeIssueUrl(urlRaw);
     if (!issueUrl) {
@@ -340,6 +384,7 @@ export default class DaylogPage extends Component {
         linkError:
           'Neplatná adresa issue. Zadejte celé URL (https://…) nebo doménu s cestou (doplní se https://).',
         timeError: '',
+        dateError: '',
       });
       return;
     }
@@ -350,6 +395,7 @@ export default class DaylogPage extends Component {
         timeError:
           'Neplatný čas. Použijte např. 30m, 1h nebo 1h 30m (mezeru mezi h a m lze vynechat).',
         linkError: '',
+        dateError: '',
       });
       return;
     }
@@ -361,7 +407,7 @@ export default class DaylogPage extends Component {
         issueUrl,
         description,
         spentMinutes,
-        createdAt: new Date().toISOString(),
+        createdAt,
         completed: false,
       },
     ]);
@@ -369,8 +415,10 @@ export default class DaylogPage extends Component {
       urlDraft: '',
       descDraft: '',
       timeDraft: '',
+      dateDraft: toDateInputValue(new Date()),
       timeError: '',
       linkError: '',
+      dateError: '',
     });
   };
 
@@ -406,6 +454,7 @@ export default class DaylogPage extends Component {
           ? formatMinutes(item.spentMinutes)
           : '',
       editDesc: item.description,
+      editDate: toDateInputValue(item.createdAt),
       editError: '',
     });
   };
@@ -416,21 +465,30 @@ export default class DaylogPage extends Component {
       editUrl: '',
       editTime: '',
       editDesc: '',
+      editDate: '',
       editError: '',
     });
   };
 
   saveRowEdit = () => {
-    const { editingId, editUrl, editTime, editDesc } = this.state;
+    const { editingId, editUrl, editTime, editDesc, editDate } = this.state;
     if (!editingId) return;
 
     const urlRaw = editUrl.trim();
     const description = editDesc.trim();
     const timeRaw = editTime.trim();
+    const createdAt = dateInputToIso(editDate);
 
     if (!urlRaw || !description) {
       this.setState({
         editError: 'Vyplňte odkaz na issue a popis.',
+      });
+      return;
+    }
+
+    if (!createdAt) {
+      this.setState({
+        editError: 'Zadejte platné datum.',
       });
       return;
     }
@@ -461,6 +519,7 @@ export default class DaylogPage extends Component {
           issueUrl,
           description,
           spentMinutes,
+          createdAt,
         });
       })
     );
@@ -577,10 +636,20 @@ export default class DaylogPage extends Component {
   }
 
   renderRowEdit(item) {
-    const { editUrl, editTime, editDesc, editError } = this.state;
+    const { editUrl, editTime, editDesc, editDate, editError } = this.state;
     return (
       <>
         <div className="daylog-edit-fields">
+          <input
+            type="date"
+            className="inline-edit-input inline-edit-input--date"
+            value={editDate}
+            onChange={(e) =>
+              this.setState({ editDate: e.target.value, editError: '' })
+            }
+            onKeyDown={this.handleRowEditKeyDown}
+            aria-label="Datum záznamu"
+          />
           <input
             ref={this.editUrlRef}
             type="text"
@@ -668,8 +737,10 @@ export default class DaylogPage extends Component {
       urlDraft,
       descDraft,
       timeDraft,
+      dateDraft,
       timeError,
       linkError,
+      dateError,
       editingId,
       calendarOpen,
       calendarOffset,
@@ -749,6 +820,14 @@ export default class DaylogPage extends Component {
         </div>
         <div className="toolbar">
           <input
+            type="date"
+            className="daylog-date-input"
+            value={dateDraft}
+            onChange={this.handleDateChange}
+            onKeyDown={this.handleKeyDown}
+            aria-label="Datum záznamu"
+          />
+          <input
             type="text"
             className="daylog-url-input"
             placeholder="Odkaz na issue (https://… nebo jen doména s cestou)"
@@ -789,6 +868,11 @@ export default class DaylogPage extends Component {
         {timeError ? (
           <p className="daylog-form-error" role="alert">
             {timeError}
+          </p>
+        ) : null}
+        {dateError ? (
+          <p className="daylog-form-error" role="alert">
+            {dateError}
           </p>
         ) : null}
         {calendarOpen ? (

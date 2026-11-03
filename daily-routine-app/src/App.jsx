@@ -7,6 +7,12 @@ import LifeManagerPage from './pages/LifeManagerPage.jsx';
 import PasswordManagerPage from './pages/PasswordManagerPage.jsx';
 
 const SAVE_DEBOUNCE_MS = 400;
+const SAVE_TIMEOUT_MS = 45000;
+const SAVE_RETRY_ATTEMPTS = 3;
+
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 export default class App extends Component {
   constructor(props) {
@@ -26,6 +32,7 @@ export default class App extends Component {
       lastServerUpdatedAt: null,
       lastSyncedAt: null,
       syncStatus: 'idle',
+      saveError: '',
       storageLoaded: false,
       persistence: 'unknown',
       relaxNowTick: Date.now(),
@@ -381,6 +388,64 @@ export default class App extends Component {
     };
   };
 
+  markSaveError = (message) => {
+    this.setState({
+      syncStatus: 'error',
+      saveError:
+        message ||
+        'Uložení selhalo. Backend pravděpodobně spí (Render cold start) nebo není dostupný. Změny zatím nejsou uložené — zkus to znovu.',
+    });
+  };
+
+  putAppData = async (body, { keepalive = false } = {}) => {
+    // keepalive (beforeunload) cannot reliably use AbortController retries.
+    if (keepalive) {
+      return fetch('/api/app-data', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body,
+        keepalive: true,
+      });
+    }
+
+    let lastError = null;
+    for (let attempt = 0; attempt < SAVE_RETRY_ATTEMPTS; attempt += 1) {
+      const controller = new AbortController();
+      const timeoutId = window.setTimeout(() => controller.abort(), SAVE_TIMEOUT_MS);
+      try {
+        const response = await fetch('/api/app-data', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body,
+          signal: controller.signal,
+        });
+        window.clearTimeout(timeoutId);
+
+        // Render cold-start / gateway errors — wait and retry.
+        if (
+          response.status === 502 ||
+          response.status === 503 ||
+          response.status === 504
+        ) {
+          lastError = new Error(`HTTP ${response.status}`);
+          if (attempt < SAVE_RETRY_ATTEMPTS - 1) {
+            await delay(1500 * (attempt + 1));
+            continue;
+          }
+        }
+        return response;
+      } catch (error) {
+        window.clearTimeout(timeoutId);
+        lastError = error;
+        if (attempt < SAVE_RETRY_ATTEMPTS - 1) {
+          await delay(1500 * (attempt + 1));
+          continue;
+        }
+      }
+    }
+    throw lastError || new Error('Save failed');
+  };
+
   persistNow = async (opts = {}) => {
     const { keepalive = false } = opts;
     const { storageLoaded, persistence, dataRevision } = this.state;
@@ -392,16 +457,13 @@ export default class App extends Component {
 
     this.persistInFlight = true;
     this.setState({ syncStatus: 'saving' });
+    const body = JSON.stringify({
+      expectedRevision: dataRevision,
+      data: this.buildPersistData(),
+    });
+
     try {
-      const response = await fetch('/api/app-data', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          expectedRevision: dataRevision,
-          data: this.buildPersistData(),
-        }),
-        keepalive,
-      });
+      const response = await this.putAppData(body, { keepalive });
 
       if (response.status === 409) {
         const conflictPayload = await response.json().catch(() => null);
@@ -418,17 +480,32 @@ export default class App extends Component {
             dataRevision: currentRevision,
             lastServerUpdatedAt,
             syncStatus: 'conflict',
+            saveError: '',
           });
           this.pendingPersist = true;
+        } else {
+          this.markSaveError(
+            'Konflikt verzí při ukládání. Obnov stránku a zkus změny znovu.'
+          );
         }
         return;
       }
 
       if (!response.ok) {
-        this.setState({ syncStatus: 'error' });
+        this.markSaveError(
+          `Uložení selhalo (HTTP ${response.status}). Backend možná právě startuje — změny zatím nejsou uložené.`
+        );
         return;
       }
+
       const payload = await response.json().catch(() => null);
+      if (!payload || payload.ok !== true) {
+        this.markSaveError(
+          'Server neodpověděl platným potvrzením uložení. Změny zatím nemusí být uložené.'
+        );
+        return;
+      }
+
       this.setState({
         dataRevision: Number.isFinite(Number(payload?.revision))
           ? Math.max(0, Math.floor(Number(payload.revision)))
@@ -439,9 +516,15 @@ export default class App extends Component {
             : this.state.lastServerUpdatedAt,
         lastSyncedAt: new Date().toISOString(),
         syncStatus: 'ok',
+        saveError: '',
       });
-    } catch {
-      this.setState({ syncStatus: 'error' });
+    } catch (error) {
+      const aborted = error?.name === 'AbortError';
+      this.markSaveError(
+        aborted
+          ? 'Uložení vypršelo (backend pravděpodobně spí / cold start). Změny zatím nejsou uložené — klikni „Zkusit uložit znovu“.'
+          : 'Nepodařilo se spojit se serverem. Backend pravděpodobně spí nebo je nedostupný. Změny zatím nejsou uložené.'
+      );
     } finally {
       this.persistInFlight = false;
       if (this.pendingPersist) {
@@ -449,6 +532,12 @@ export default class App extends Component {
         this.persistNow();
       }
     }
+  };
+
+  retryPersist = () => {
+    this.setState({ saveError: '', syncStatus: 'saving' }, () => {
+      this.persistNow();
+    });
   };
 
   flushPersist = () => {
@@ -671,6 +760,7 @@ export default class App extends Component {
       lastServerUpdatedAt,
       lastSyncedAt,
       syncStatus,
+      saveError,
       backupDownloading,
       backupError,
     } = this.state;
@@ -707,7 +797,7 @@ export default class App extends Component {
               <div>
                 Posledni uprava dat: {this.formatDateTime(lastServerUpdatedAt)}
               </div>
-              <div>
+              <div className={syncStatus === 'error' ? 'app-header-sync-error' : undefined}>
                 Posledni sync klienta: {this.formatDateTime(lastSyncedAt)} ({syncStatusLabel})
               </div>
               {backupError ? <div className="app-header-backup-error">{backupError}</div> : null}
@@ -793,7 +883,22 @@ export default class App extends Component {
                 <p className="empty-hint">Načítám uložená data…</p>
               </div>
             ) : (
-              this.renderMain(page)
+              <>
+                {saveError ? (
+                  <div className="save-error-banner" role="alert">
+                    <div className="save-error-banner-text">{saveError}</div>
+                    <button
+                      type="button"
+                      className="btn btn-compact save-error-retry-btn"
+                      onClick={this.retryPersist}
+                      disabled={syncStatus === 'saving'}
+                    >
+                      {syncStatus === 'saving' ? 'Ukládám…' : 'Zkusit uložit znovu'}
+                    </button>
+                  </div>
+                ) : null}
+                {this.renderMain(page)}
+              </>
             )}
           </main>
         </div>

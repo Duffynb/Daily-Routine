@@ -5,6 +5,7 @@ import FoodTrackingPage from './pages/FoodTrackingPage.jsx';
 import SpendlogPage from './pages/SpendlogPage.jsx';
 import LifeManagerPage from './pages/LifeManagerPage.jsx';
 import PasswordManagerPage from './pages/PasswordManagerPage.jsx';
+import MindfulnessPage from './pages/MindfulnessPage.jsx';
 
 const SAVE_DEBOUNCE_MS = 400;
 const SAVE_TIMEOUT_MS = 45000;
@@ -26,6 +27,10 @@ export default class App extends Component {
       foodBurnEntries: [],
       spendEntries: [],
       passwordEntries: [],
+      gratitudeDays: [],
+      mindHeapItems: [],
+      lessonEntries: [],
+      mindfulnessSection: 'gratitude',
       calorieGoal: 2000,
       daylogHourlyRate: 300,
       dataRevision: 0,
@@ -323,6 +328,9 @@ export default class App extends Component {
     const foodBurnEntries = Array.isArray(data?.foodBurnEntries) ? data.foodBurnEntries : [];
     const spendEntries = Array.isArray(data?.spendEntries) ? data.spendEntries : [];
     const passwordEntries = Array.isArray(data?.passwordEntries) ? data.passwordEntries : [];
+    const gratitudeDays = Array.isArray(data?.gratitudeDays) ? data.gratitudeDays : [];
+    const mindHeapItems = Array.isArray(data?.mindHeapItems) ? data.mindHeapItems : [];
+    const lessonEntries = Array.isArray(data?.lessonEntries) ? data.lessonEntries : [];
     const calorieGoal = Number.isFinite(Number(data?.calorieGoal)) ? Number(data.calorieGoal) : 2000;
     const daylogHourlyRate = Number.isFinite(Number(data?.daylogHourlyRate))
       ? Math.max(0, Math.floor(Number(data.daylogHourlyRate)))
@@ -342,6 +350,9 @@ export default class App extends Component {
       foodBurnEntries,
       spendEntries,
       passwordEntries,
+      gratitudeDays,
+      mindHeapItems,
+      lessonEntries,
       calorieGoal,
       daylogHourlyRate,
       dataRevision,
@@ -372,6 +383,9 @@ export default class App extends Component {
       foodBurnEntries,
       spendEntries,
       passwordEntries,
+      gratitudeDays,
+      mindHeapItems,
+      lessonEntries,
       calorieGoal,
       daylogHourlyRate,
     } = this.state;
@@ -383,6 +397,9 @@ export default class App extends Component {
       foodBurnEntries,
       spendEntries,
       passwordEntries,
+      gratitudeDays,
+      mindHeapItems,
+      lessonEntries,
       calorieGoal,
       daylogHourlyRate,
     };
@@ -582,6 +599,18 @@ export default class App extends Component {
     this.setState({ passwordEntries: items }, this.schedulePersist);
   };
 
+  handleGratitudeDaysChange = (items) => {
+    this.setState({ gratitudeDays: items }, this.schedulePersist);
+  };
+
+  handleMindHeapItemsChange = (items) => {
+    this.setState({ mindHeapItems: items }, this.schedulePersist);
+  };
+
+  handleLessonEntriesChange = (items) => {
+    this.setState({ lessonEntries: items }, this.schedulePersist);
+  };
+
   handleCalorieGoalChange = (goal) => {
     this.setState({ calorieGoal: goal }, this.schedulePersist);
   };
@@ -641,6 +670,10 @@ export default class App extends Component {
       foodBurnEntries,
       spendEntries,
       passwordEntries,
+      gratitudeDays,
+      mindHeapItems,
+      lessonEntries,
+      mindfulnessSection,
       calorieGoal,
       daylogHourlyRate,
     } = this.state;
@@ -658,6 +691,24 @@ export default class App extends Component {
       );
     }
 
+    if (page === 'spend') {
+      return <SpendlogPage items={spendEntries} onItemsChange={this.handleSpendEntriesChange} />;
+    }
+
+    if (page === 'mindfulness') {
+      return (
+        <MindfulnessPage
+          section={mindfulnessSection}
+          gratitudeDays={gratitudeDays}
+          onGratitudeDaysChange={this.handleGratitudeDaysChange}
+          mindHeapItems={mindHeapItems}
+          onMindHeapItemsChange={this.handleMindHeapItemsChange}
+          lessonEntries={lessonEntries}
+          onLessonEntriesChange={this.handleLessonEntriesChange}
+        />
+      );
+    }
+
     if (page === 'food') {
       return (
         <FoodTrackingPage
@@ -669,10 +720,6 @@ export default class App extends Component {
           onGoalChange={this.handleCalorieGoalChange}
         />
       );
-    }
-
-    if (page === 'spend') {
-      return <SpendlogPage items={spendEntries} onItemsChange={this.handleSpendEntriesChange} />;
     }
 
     if (page === 'password') {
@@ -763,6 +810,7 @@ export default class App extends Component {
       saveError,
       backupDownloading,
       backupError,
+      mindfulnessSection,
     } = this.state;
     const syncStatusLabel =
       syncStatus === 'saving'
@@ -842,17 +890,75 @@ export default class App extends Component {
               </button>
               <button
                 type="button"
-                className={`menu-item${page === 'food' ? ' active' : ''}`}
-                onClick={() => this.setState({ page: 'food' })}
-              >
-                Foodlog
-              </button>
-              <button
-                type="button"
                 className={`menu-item${page === 'spend' ? ' active' : ''}`}
                 onClick={() => this.setState({ page: 'spend' })}
               >
                 Spendlog
+              </button>
+              <button
+                type="button"
+                className={`menu-item${page === 'mindfulness' ? ' active' : ''}`}
+                onClick={() =>
+                  this.setState({ page: 'mindfulness', mindfulnessSection: 'gratitude' })
+                }
+              >
+                Mindfulness
+              </button>
+              {page === 'mindfulness' ? (
+                <>
+                  <button
+                    type="button"
+                    className={`menu-item menu-item--sub${
+                      mindfulnessSection === 'gratitude' ? ' active' : ''
+                    }`}
+                    onClick={() => this.setState({ mindfulnessSection: 'gratitude' })}
+                  >
+                    Seznam vděčnosti
+                  </button>
+                  <button
+                    type="button"
+                    className={`menu-item menu-item--sub${
+                      mindfulnessSection === 'heap' ? ' active' : ''
+                    }`}
+                    onClick={() => this.setState({ mindfulnessSection: 'heap' })}
+                  >
+                    Halda
+                  </button>
+                  <button
+                    type="button"
+                    className={`menu-item menu-item--sub${
+                      mindfulnessSection === 'lessons' ? ' active' : ''
+                    }`}
+                    onClick={() => this.setState({ mindfulnessSection: 'lessons' })}
+                  >
+                    Poučení
+                  </button>
+                  <button
+                    type="button"
+                    className={`menu-item menu-item--sub${
+                      mindfulnessSection === 'pomodoro' ? ' active' : ''
+                    }`}
+                    onClick={() => this.setState({ mindfulnessSection: 'pomodoro' })}
+                  >
+                    Pomodoro
+                  </button>
+                  <button
+                    type="button"
+                    className={`menu-item menu-item--sub${
+                      mindfulnessSection === 'book-summary' ? ' active' : ''
+                    }`}
+                    onClick={() => this.setState({ mindfulnessSection: 'book-summary' })}
+                  >
+                    Shrnutí knihy
+                  </button>
+                </>
+              ) : null}
+              <button
+                type="button"
+                className={`menu-item${page === 'food' ? ' active' : ''}`}
+                onClick={() => this.setState({ page: 'food' })}
+              >
+                Foodlog
               </button>
               <button
                 type="button"

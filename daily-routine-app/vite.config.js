@@ -5,6 +5,7 @@ import {
   appDataMiddleware,
   foodEstimateMiddleware,
   activityBurnEstimateMiddleware,
+  bookSummaryMiddleware,
 } from './server/persist-api.mjs';
 
 function persistFilePlugin() {
@@ -14,11 +15,13 @@ function persistFilePlugin() {
       server.middlewares.use(appDataMiddleware);
       server.middlewares.use(foodEstimateMiddleware);
       server.middlewares.use(activityBurnEstimateMiddleware);
+      server.middlewares.use(bookSummaryMiddleware);
     },
     configurePreviewServer(server) {
       server.middlewares.use(appDataMiddleware);
       server.middlewares.use(foodEstimateMiddleware);
       server.middlewares.use(activityBurnEstimateMiddleware);
+      server.middlewares.use(bookSummaryMiddleware);
     },
   };
 }

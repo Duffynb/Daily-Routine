@@ -242,6 +242,16 @@ body::after {
   font-weight: 600;
 }
 
+.menu-item--sub {
+  padding-left: 2.1rem;
+  font-size: 0.92rem;
+  color: #6b5646;
+}
+
+.menu-item--sub.active {
+  font-weight: 600;
+}
+
 .app-main {
   flex: 1;
   padding: 1.5rem;
@@ -451,6 +461,10 @@ body::after {
   border-left-color: #9b7f65;
 }
 
+.app-shell--light .menu-item--sub {
+  color: #6f5d4f;
+}
+
 .app-shell--light .app-footer {
   background: rgba(95, 77, 61, 0.72);
   color: #f6efe7;
@@ -575,6 +589,605 @@ body::after {
 .list-row.completed {
   background: #ecfdf5;
   border-color: #6ee7b7;
+}
+
+.mindfulness-hint {
+  margin: 0 0 1.1rem;
+  color: #6b5646;
+  line-height: 1.45;
+  max-width: 42rem;
+}
+
+.gratitude-calendar {
+  margin: 0 0 1.15rem;
+  border: 1px solid rgba(138, 110, 83, 0.22);
+  border-radius: 12px;
+  background: rgba(255, 252, 247, 0.78);
+  padding: 0.85rem 0.9rem 0.95rem;
+}
+
+.gratitude-calendar-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.65rem;
+}
+
+.gratitude-calendar-title-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.gratitude-calendar-title-wrap h3 {
+  margin: 0;
+  font-size: 1rem;
+  color: #5c3c27;
+  text-transform: capitalize;
+  min-width: 9rem;
+  text-align: center;
+}
+
+.gratitude-calendar-grid .gratitude-cal-empty {
+  min-height: 54px;
+}
+
+button.gratitude-cal-day {
+  width: 100%;
+  min-height: 54px;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.08s ease, box-shadow 0.15s ease;
+}
+
+button.gratitude-cal-day:hover {
+  filter: brightness(0.98);
+}
+
+button.gratitude-cal-day:active {
+  transform: scale(0.98);
+}
+
+button.gratitude-cal-day.gratitude-cal-day--complete {
+  background: #bbf7d0;
+  border-color: #22c55e;
+  color: #14532d;
+}
+
+button.gratitude-cal-day.gratitude-cal-day--missing {
+  background: #fecaca;
+  border-color: #ef4444;
+  color: #7f1d1d;
+}
+
+button.gratitude-cal-day.gratitude-cal-day--future {
+  background: #f3f4f6;
+  border-color: #e5e7eb;
+  color: #9ca3af;
+}
+
+button.gratitude-cal-day.gratitude-cal-day--selected {
+  box-shadow: 0 0 0 2px #2563eb;
+}
+
+.book-summary-form {
+  margin-bottom: 0.85rem;
+}
+
+.book-summary-error {
+  margin: 0 0 0.85rem;
+  color: #9f1239;
+  font-size: 0.92rem;
+}
+
+.book-summary-card {
+  border: 1px solid rgba(138, 110, 83, 0.22);
+  border-radius: 12px;
+  background: rgba(255, 252, 247, 0.82);
+  padding: 0.95rem 1rem;
+}
+
+.book-summary-card-top {
+  display: flex;
+  gap: 0.9rem;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+}
+
+.book-summary-cover {
+  width: 92px;
+  height: auto;
+  border-radius: 6px;
+  object-fit: cover;
+  flex: 0 0 auto;
+  background: #e7ddd1;
+}
+
+.book-summary-meta h3 {
+  margin: 0 0 0.35rem;
+  color: #5c3c27;
+  font-size: 1.15rem;
+}
+
+.book-summary-authors,
+.book-summary-year,
+.book-summary-source {
+  margin: 0.15rem 0 0;
+  color: #7a6554;
+  font-size: 0.88rem;
+}
+
+.book-summary-source a {
+  color: #2563eb;
+}
+
+.book-summary-section {
+  margin-top: 0.85rem;
+}
+
+.book-summary-section h4 {
+  margin: 0 0 0.35rem;
+  font-size: 0.92rem;
+  color: #6b5646;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.book-summary-section--message {
+  border: 1px solid rgba(37, 99, 235, 0.22);
+  background: rgba(239, 246, 255, 0.72);
+  border-radius: 10px;
+  padding: 0.7rem 0.8rem;
+}
+
+.book-summary-text {
+  margin: 0;
+  line-height: 1.5;
+  color: #3f3127;
+  white-space: pre-wrap;
+}
+
+.book-summary-takeaways {
+  margin: 0;
+  padding-left: 1.15rem;
+  color: #3f3127;
+  line-height: 1.45;
+}
+
+.book-summary-takeaways li + li {
+  margin-top: 0.35rem;
+}
+
+.book-summary-note {
+  margin: 0.85rem 0 0;
+  font-size: 0.84rem;
+  color: #7a6554;
+}
+
+.pomodoro-card {
+  max-width: 420px;
+  margin: 0 auto;
+  border: 1px solid rgba(138, 110, 83, 0.22);
+  border-radius: 14px;
+  background: rgba(255, 252, 247, 0.82);
+  padding: 1.15rem 1.1rem 1.2rem;
+  text-align: center;
+}
+
+.pomodoro-card--running {
+  border-color: #93c5fd;
+  box-shadow: inset 0 0 0 1px rgba(37, 99, 235, 0.12);
+}
+
+.pomodoro-card--done {
+  border-color: #86efac;
+  background: #ecfdf5;
+}
+
+.pomodoro-time {
+  font-size: clamp(2.8rem, 8vw, 3.6rem);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+  color: #5c3c27;
+  line-height: 1.1;
+}
+
+.pomodoro-card--done .pomodoro-time {
+  color: #047857;
+}
+
+.pomodoro-progress-track {
+  margin: 0.85rem auto 0.7rem;
+  height: 8px;
+  max-width: 280px;
+  border-radius: 999px;
+  background: rgba(138, 110, 83, 0.16);
+  overflow: hidden;
+}
+
+.pomodoro-progress-fill {
+  height: 100%;
+  background: #2563eb;
+  border-radius: inherit;
+  transition: width 0.2s linear;
+}
+
+.pomodoro-card--done .pomodoro-progress-fill {
+  background: #16a34a;
+}
+
+.pomodoro-status {
+  margin: 0 0 0.95rem;
+  color: #6b5646;
+  font-size: 0.95rem;
+  line-height: 1.35;
+}
+
+.pomodoro-presets {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.pomodoro-minutes-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0 auto 0.9rem;
+  color: #6b5646;
+  font-size: 0.88rem;
+}
+
+.pomodoro-minutes-input {
+  width: 5.5rem;
+  padding: 0.4rem 0.5rem;
+  border: 1px solid #d6c4b0;
+  border-radius: 6px;
+  font: inherit;
+  text-align: center;
+  background: #fff;
+  color: #3f3127;
+}
+
+.pomodoro-minutes-input:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.pomodoro-actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.lessons-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.55rem;
+  margin: 0 0 1rem;
+}
+
+.lessons-stat {
+  border: 1px solid rgba(138, 110, 83, 0.22);
+  border-radius: 10px;
+  background: rgba(255, 252, 247, 0.78);
+  padding: 0.65rem 0.7rem;
+  text-align: center;
+}
+
+.lessons-stat-value {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #5c3c27;
+  line-height: 1.1;
+}
+
+.lessons-stat-label {
+  margin-top: 0.2rem;
+  font-size: 0.78rem;
+  color: #7a6554;
+}
+
+.lessons-calendar {
+  margin: 0 0 1.15rem;
+  border: 1px solid rgba(138, 110, 83, 0.22);
+  border-radius: 12px;
+  background: rgba(255, 252, 247, 0.78);
+  padding: 0.85rem 0.9rem 0.95rem;
+}
+
+button.lessons-cal-day {
+  width: 100%;
+  min-height: 54px;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  color: #6b7280;
+  transition: transform 0.08s ease, box-shadow 0.15s ease;
+}
+
+button.lessons-cal-day:hover {
+  filter: brightness(0.98);
+}
+
+button.lessons-cal-day.lessons-cal-day--has {
+  background: #fde68a;
+  border-color: #f59e0b;
+  color: #7c2d12;
+}
+
+button.lessons-cal-day.lessons-cal-day--future {
+  background: #f9fafb;
+  border-color: #e5e7eb;
+  color: #9ca3af;
+}
+
+button.lessons-cal-day.lessons-cal-day--selected {
+  box-shadow: 0 0 0 2px #2563eb;
+}
+
+.lessons-compose {
+  margin-bottom: 0.85rem;
+}
+
+.lessons-filter-hint {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  flex-wrap: wrap;
+  margin: 0 0 0.85rem;
+  color: #6b5646;
+  font-size: 0.9rem;
+}
+
+.lessons-day {
+  margin-bottom: 1rem;
+}
+
+.lessons-day-title {
+  margin: 0 0 0.45rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #7a6554;
+}
+
+.lessons-row {
+  align-items: flex-start;
+}
+
+.lessons-row-text {
+  flex: 1 1 auto;
+  min-width: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  line-height: 1.4;
+  color: #3f3127;
+}
+
+.lessons-row-actions {
+  display: inline-flex;
+  gap: 0.35rem;
+  flex: 0 0 auto;
+}
+
+.lessons-edit-fields {
+  width: 100%;
+}
+
+.heap-compose {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  margin-bottom: 1rem;
+}
+
+.heap-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid #d6c4b0;
+  border-radius: 8px;
+  font: inherit;
+  line-height: 1.4;
+  resize: vertical;
+  min-height: 5.5rem;
+  background: #fff;
+  color: #3f3127;
+}
+
+.heap-input:focus {
+  outline: 2px solid rgba(37, 99, 235, 0.35);
+  outline-offset: 1px;
+}
+
+.heap-compose-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  justify-content: flex-end;
+}
+
+.heap-mic-btn.heap-mic-btn--live {
+  background: #fee2e2;
+  color: #7f1d1d;
+  border: 1px solid #fca5a5;
+}
+
+.heap-speech-error {
+  margin: 0 0 0.75rem;
+  color: #9f1239;
+  font-size: 0.9rem;
+}
+
+.heap-speech-note {
+  margin: 0 0 0.75rem;
+  color: #7a6554;
+  font-size: 0.85rem;
+}
+
+.heap-list {
+  gap: 0.6rem;
+}
+
+.heap-row {
+  align-items: flex-start;
+}
+
+.heap-row-main {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.heap-row-text {
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: #3f3127;
+  line-height: 1.4;
+}
+
+.heap-row-meta {
+  margin-top: 0.35rem;
+  font-size: 0.78rem;
+  color: #7a6554;
+}
+
+.gratitude-days {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.gratitude-day {
+  border: 1px solid rgba(138, 110, 83, 0.22);
+  border-radius: 12px;
+  background: rgba(255, 252, 247, 0.72);
+  padding: 0.85rem 0.9rem 1rem;
+}
+
+.gratitude-day--complete {
+  border-color: #6ee7b7;
+  background: #ecfdf5;
+  box-shadow: inset 0 0 0 1px rgba(16, 185, 129, 0.12);
+}
+
+.gratitude-day-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.7rem;
+}
+
+.gratitude-day-header h3 {
+  margin: 0;
+  font-size: 1.05rem;
+  color: #5c3c27;
+  text-transform: capitalize;
+}
+
+.gratitude-day-status {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #7a6554;
+}
+
+.gratitude-day--complete .gratitude-day-status {
+  color: #047857;
+}
+
+.gratitude-list {
+  gap: 0.55rem;
+}
+
+.gratitude-row {
+  gap: 0.65rem;
+}
+
+.gratitude-row--confirmed {
+  background: #ecfdf5;
+  border-color: #6ee7b7;
+}
+
+.gratitude-row-index {
+  flex: 0 0 auto;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(154, 103, 66, 0.14);
+  color: #6b4a33;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.gratitude-row--confirmed .gratitude-row-index {
+  background: rgba(16, 185, 129, 0.18);
+  color: #047857;
+}
+
+.gratitude-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0.45rem 0.65rem;
+  border: 1px solid #d6c4b0;
+  border-radius: 6px;
+  font: inherit;
+  background: #fff;
+  color: #3f3127;
+}
+
+.gratitude-input:disabled {
+  background: transparent;
+  border-color: transparent;
+  color: #065f46;
+  font-weight: 600;
+  cursor: default;
+}
+
+.gratitude-input:focus {
+  outline: 2px solid rgba(37, 99, 235, 0.35);
+  outline-offset: 1px;
+}
+
+.gratitude-row .btn-compact {
+  white-space: nowrap;
+}
+
+.gratitude-row-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex: 0 0 auto;
+}
+
+.btn-danger {
+  background: rgba(107, 86, 70, 0.12);
+  color: #5c4a3c;
+  border: 1px solid rgba(107, 86, 70, 0.28);
+}
+
+.btn-danger:hover:not(:disabled) {
+  background: rgba(107, 86, 70, 0.2);
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
 }
 
 .list-row.list-row--todo-drag-over {
@@ -1815,6 +2428,19 @@ a.daylog-issue-link:hover {
   .menu-item.active {
     border-left-color: transparent;
     border-bottom-color: #9a6742;
+  }
+
+  .menu-item--sub {
+    padding-left: 0.75rem;
+    font-size: 0.88rem;
+  }
+
+  .gratitude-row {
+    flex-wrap: wrap;
+  }
+
+  .gratitude-input {
+    flex: 1 1 100%;
   }
 
   .toolbar {

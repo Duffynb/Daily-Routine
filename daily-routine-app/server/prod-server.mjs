@@ -7,6 +7,7 @@ import {
   appDataMiddleware,
   foodEstimateMiddleware,
   activityBurnEstimateMiddleware,
+  bookSummaryMiddleware,
 } from './persist-api.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -43,6 +44,7 @@ const apiStack = [
   appDataMiddleware,
   foodEstimateMiddleware,
   activityBurnEstimateMiddleware,
+  bookSummaryMiddleware,
 ];
 
 function runApi(req, res, i = 0) {
